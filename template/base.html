@@ -36,6 +36,7 @@
     <script src="{% static 'scenter.js' %}"></script>
     <script>
     var map;
+    var currentPolygon;
     function initialize() {
       var mapOptions = {
         zoom: 15,
@@ -58,9 +59,9 @@
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
           // Set event handler for click
           google.maps.event.addListener(polygon, 'click', function(event){
-            alert(this);
+            populateMessages(this);
           });
-
+          currentPolygon = polygon;
           $('#fencePolygon').val(convertPolygonForApi(polygon.getPath().getArray()));
           $('#saveFenceDialog').modal('toggle');
         });
@@ -71,6 +72,7 @@
     <script>
         window.onload=function(){
         	adjustMessage();
+		populateMessages(null);
         };
         window.onresize = function(event) {
         	adjustMessage();
@@ -102,37 +104,43 @@
         	var m = document.getElementById("m" + i);
         	m.setAttribute("style","display:none;");
         }
-	function sendMessage() {
+	function appendMessage(txt) {
 		var ml = document.getElementById("messagelist");
-		var numofmessage = $("#messagelist").children().size() + 1;
-		console.log(numofmessage);
+                var numofmessage = $("#messagelist").children().size() + 1;
+
+                var nm = document.createElement("a");
+                nm.setAttribute("class","list-group-item");
+                nm.setAttribute("id", "m" + numofmessage);
+                nm.setAttribute("href", "#");
+                nm.setAttribute("onclick", "showDel(" + numofmessage + ")");
+
+                var mb = document.createElement("h4");
+                mb.setAttribute("class","list-group-item-heading");
+                var t = document.createTextNode(txt);
+                var delButton = document.createElement("button");
+                delButton.setAttribute("id","button" + numofmessage);
+                delButton.setAttribute("type", "button");
+                delButton.setAttribute("class", "btn btn-danger btn-block");
+                delButton.setAttribute("style", "display:none");
+
+                delButton.setAttribute("onclick", "delMessage(" + numofmessage + ")");
+
+                var bt = document.createTextNode("Delete");
+                delButton.appendChild(bt);
+
+                mb.appendChild(t);
+                nm.appendChild(mb);
+                nm.appendChild(delButton);
+                ml.insertBefore(nm, ml.firstChild);
+	}
+	function sendMessage() {
 		var m = document.getElementById("newMessage");
 		var txt = m.value;
-		var nm = document.createElement("a");
-		nm.setAttribute("class","list-group-item");
-		nm.setAttribute("id", "m" + numofmessage);
-		nm.setAttribute("href", "#");
-		nm.setAttribute("onclick", "showDel(" + numofmessage + ")");
-
-		var mb = document.createElement("h4");
-		mb.setAttribute("class","list-group-item-heading");
-		var t = document.createTextNode(txt);
-		var delButton = document.createElement("button");
-		delButton.setAttribute("id","button" + numofmessage);
-		delButton.setAttribute("type", "button");
-		delButton.setAttribute("class", "btn btn-danger btn-block");
-		delButton.setAttribute("style", "display:none");
-
-		delButton.setAttribute("onclick", "delMessage(" + numofmessage + ")");
-
-		var bt = document.createTextNode("Delete");
-		delButton.appendChild(bt);
-
-		mb.appendChild(t);
-		nm.appendChild(mb);
-		nm.appendChild(delButton);
-		ml.insertBefore(nm, ml.firstChild);
-
+		if (/\S/.test(txt)) {
+			appendMessage(txt);
+      // post message to the API
+      id = postMessage(currentPolygon, txt);
+		}
 		m.value = "";
 	}
     </script>
@@ -272,12 +280,20 @@
               cache: false,
               type: 'POST',
               data : $('#createFenceForm').serialize(),
-              success: function(json) {
-                  alert(json);
+               // TODO: what if it fails?...
+               success: function(json) {
+                  // Set id for the current polygon
+                  currentPolygon.id = json.id;
               }
           });
 
+          var now = new Date();
+          // By default make date tomorrow
+          now.setDate(now.getDate() + 1);
+          $("#fenceDue").val(now);
+          $("#fenceName").val("");
           disabled.attr('disabled','disabled');
+          $('#saveFenceDialog').modal('toggle');
         });
         $();
       });

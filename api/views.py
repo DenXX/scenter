@@ -107,8 +107,8 @@ class ScentListView(APIView):
     def post(self, request, fence_id):
         """ Creates new scent for the given fence """
         # TODO: Check how to change value of serializer instead of this
-        request.DATA[0]['fence'] = fence_id
-        serializer = ScentSerializer(data=request.DATA)
+        serializer = ScentSerializer(data=request.DATA,
+            context={'fence': fence_id})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
