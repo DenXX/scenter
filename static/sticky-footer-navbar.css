@@ -54,8 +54,11 @@ body {
 .messagecontainer{
   width:400;
   height: 100% - 50px;
+  overflow: auto;
 }
 
+.spacer15 { height: 15px; width: 100%; font-size: 0; margin: 0; padding: 0; border: 0; display: block; }
+.spacer5 { height: 5px; width: 100%; font-size: 0; margin: 0; padding: 0; border: 0; display: block; }
 
 #footer > .container {
   padding-left: 15px;

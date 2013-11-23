@@ -8,7 +8,7 @@ from api.models import Fence, Scent
 class FenceSerializer(serializers.ModelSerializer):
     """ Serializer for Fence model """
     location = serializers.CharField(source='location')
-
+    due = serializers.DateTimeField(input_formats=['%m/%d/%Y %I:%M %p',])
     class Meta:
         model = Fence
         fields = ('id', 'name', 'created', 'due', 'location')

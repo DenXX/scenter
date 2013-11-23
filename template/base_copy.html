@@ -58,7 +58,7 @@
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
           // Set event handler for click
           google.maps.event.addListener(polygon, 'click', function(event){
-            alert(this);
+            getMessages(this);
           });
 
           $('#fencePolygon').val(convertPolygonForApi(polygon.getPath().getArray()));
@@ -70,71 +70,71 @@
     <script type="text/javascript" src="{{STATIC_URL}}jquery-1.8.2.js"></script>
     <script>
         window.onload=function(){
-        	adjustMessage();
+          adjustMessage();
         };
         window.onresize = function(event) {
-        	adjustMessage();
+          adjustMessage();
         }
         function adjustMessage() {
-        	var m = document.getElementById("message");
+          var m = document.getElementById("message");
                 var ws = $(window).height() - 110;
                 m.setAttribute("style","height:" + ws + "px;position:absolute;right:5px;top:55px;width:390px");
         }
         function test() {
-        	console.log('hh');
+          console.log('hh');
         }
         function showDel(i) {
-		var numofmessage = $("#messagelist").children().size();
-		for (var j = 1; j <= numofmessage; j++) {
-			if (j != i) {
-				var bb = document.getElementById("button" + j);
-				bb.setAttribute("style","display:none;");
-			}
-		}
-        	var b = document.getElementById("button" + i);
-		
-        	if (b.style.display == 'none')
-        		b.setAttribute("style","display:inline;");
-        	else
-        		b.setAttribute("style","display:none;");
+    var numofmessage = $("#messagelist").children().size();
+    for (var j = 1; j <= numofmessage; j++) {
+      if (j != i) {
+        var bb = document.getElementById("button" + j);
+        bb.setAttribute("style","display:none;");
+      }
+    }
+          var b = document.getElementById("button" + i);
+    
+          if (b.style.display == 'none')
+            b.setAttribute("style","display:inline;");
+          else
+            b.setAttribute("style","display:none;");
         }
         function delMessage(i) {
-        	var m = document.getElementById("m" + i);
-        	m.setAttribute("style","display:none;");
+          var m = document.getElementById("m" + i);
+          m.setAttribute("style","display:none;");
         }
-	function sendMessage() {
-		var ml = document.getElementById("messagelist");
-		var numofmessage = $("#messagelist").children().size() + 1;
-		console.log(numofmessage);
-		var m = document.getElementById("newMessage");
-		var txt = m.value;
-		var nm = document.createElement("a");
-		nm.setAttribute("class","list-group-item");
-		nm.setAttribute("id", "m" + numofmessage);
-		nm.setAttribute("href", "#");
-		nm.setAttribute("onclick", "showDel(" + numofmessage + ")");
+  function sendMessage() {
+    var ml = document.getElementById("messagelist");
+    var numofmessage = $("#messagelist").children().size() + 1;
+    console.log(numofmessage);
+    var m = document.getElementById("newMessage");
+    var txt = m.value;
+    var nm = document.createElement("a");
+    nm.setAttribute("class","list-group-item");
+    nm.setAttribute("id", "m" + numofmessage);
+    nm.setAttribute("href", "#");
+    nm.setAttribute("onclick", "showDel(" + numofmessage + ")");
 
-		var mb = document.createElement("h4");
-		mb.setAttribute("class","list-group-item-heading");
-		var t = document.createTextNode(txt);
-		var delButton = document.createElement("button");
-		delButton.setAttribute("id","button" + numofmessage);
-		delButton.setAttribute("type", "button");
-		delButton.setAttribute("class", "btn btn-danger btn-block");
-		delButton.setAttribute("style", "display:none");
+    var mb = document.createElement("h4");
+    mb.setAttribute("class","list-group-item-heading");
+    var t = document.createTextNode(txt);
+    var delButton = document.createElement("button");
+    delButton.setAttribute("id","button" + numofmessage);
+    delButton.setAttribute("type", "button");
+    delButton.setAttribute("class", "btn btn-danger btn-block");
+    delButton.setAttribute("style", "display:none");
 
-		delButton.setAttribute("onclick", "delMessage(" + numofmessage + ")");
+    delButton.setAttribute("onclick", "delMessage(" + numofmessage + ")");
 
-		var bt = document.createTextNode("Delete");
-		delButton.appendChild(bt);
+    var bt = document.createTextNode("Delete");
+    delButton.appendChild(bt);
 
-		mb.appendChild(t);
-		nm.appendChild(mb);
-		nm.appendChild(delButton);
-		ml.insertBefore(nm, ml.firstChild);
+    mb.appendChild(t);
+    nm.appendChild(mb);
+    nm.appendChild(delButton);
+    ml.insertBefore(nm, ml.firstChild);
 
-		m.value = "";
-	}
+    m.value = "";
+  }
     </script>
   </head>
 
@@ -178,21 +178,21 @@
       </div>
 
       <!-- Begin page content -->
-	<div class="container">
-		<div id="map-canvas"></div>
-	</div>
+  <div class="container">
+    <div id="map-canvas"></div>
+  </div>
 
-	<div id="message" class="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px">
+  <div id="message" class="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px">
 
-		<textarea id="newMessage" class="form-control" rows="3" placeholder="Text message scenting in this area."></textarea>
+    <textarea id="newMessage" class="form-control" rows="3" placeholder="Text message scenting in this area."></textarea>
 
-		<div class="spacer5"></div>
-		
-		<button type="button" class="btn btn-success btn-block" onclick="sendMessage()">Scent</button>
+    <div class="spacer5"></div>
+    
+    <button type="button" class="btn btn-success btn-block" onclick="sendMessage()">Scent</button>
 
-		<div class="spacer15"></div>
+    <div class="spacer15"></div>
 
-		<div id="messagelist" class="list-group">
+    <div id="messagelist" class="list-group">
                         <a id="m1" href="#" onclick="showDel(1)" class="list-group-item">
                                 <h4 class="list-group-item-heading">List group item heading</h4>
                                 <button id="button1" type="button" onclick="delMessage(1)" class="btn btn-danger btn-block" style="display:none">Delete</button>
@@ -203,7 +203,7 @@
                         </a>
                 </div>
 
-	</div>
+  </div>
 
     <div id="footer">
       <div class="container">
@@ -234,7 +234,7 @@
                  </div>
                  <script type="text/javascript">
                    $(function() {
-                     now = new Date();
+                     var now = new Date();
                      // By default make date tomorrow
                      now.setDate(now.getDate() + 1);
                      $('#dueDatePicker').datetimepicker({
@@ -276,8 +276,14 @@
                   alert(json);
               }
           });
-
+          var now = new Date();
+          // By default make date tomorrow
+          now.setDate(now.getDate() + 1);
+          $("#fenceDue").val(now);
+          $("#fenceName").val("");
+          alert("11242135423");
           disabled.attr('disabled','disabled');
+          $('#saveFenceDialog').toggle();
         });
         $();
       });
