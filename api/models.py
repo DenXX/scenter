@@ -35,4 +35,8 @@ class Scent(models.Model):
         help_text=u'When the message was created')
     due = models.DateTimeField(blank=True, null=True, db_index=True,
         help_text=u'When the message becomes inactive')
-    fence = models.ForeignKey(Fence, help_text=u'Fence for the current message')
+    fence = models.ForeignKey(Fence, help_text=u'Fence for the current message',
+        related_name='scents')
+
+    class Meta:
+        ordering = ('created',)
