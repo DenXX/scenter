@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from django.contrib.gis.geos import Polygon, Point
+from django.contrib.gis.geos import Polygon, Point, GEOSGeometry
 
 class Fence(models.Model):
     """ Represents a geo-fence (some shape) """
@@ -18,10 +18,11 @@ class Fence(models.Model):
     # Create methods to convert location representations from numbers to GEOMETRY
     def set_location(self, location):
         # TODO: Make it more general, not just circle
-        self._location = Polygon(location)
+        #self._location = fromstr("POLYGON(" + location + ")")
+        self._location = GEOSGeometry(location)
 
     def get_location(self):
-        return self._location
+        return self._location.json
 
     location = property(get_location, set_location)
 

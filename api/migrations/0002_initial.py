@@ -8,23 +8,46 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Fence.location'
-        db.delete_column(u'api_fence', 'location')
+        # Adding model 'Fence'
+        db.create_table(u'api_fence', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=128)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('due', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('_location', self.gf('django.contrib.gis.db.models.fields.PolygonField')()),
+        ))
+        db.send_create_signal(u'api', ['Fence'])
 
-        # Adding field 'Fence._location'
-        db.add_column(u'api_fence', '_location',
-                      self.gf('django.contrib.gis.db.models.fields.PolygonField')(default=''),
-                      keep_default=False)
+        # Adding model 'ScentType'
+        db.create_table(u'api_scenttype', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=64)),
+        ))
+        db.send_create_signal(u'api', ['ScentType'])
+
+        # Adding model 'Scent'
+        db.create_table(u'api_scent', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('author', self.gf('django.db.models.fields.CharField')(max_length=40, null=True, blank=True)),
+            ('type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['api.ScentType'])),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=40)),
+            ('content', self.gf('django.db.models.fields.CharField')(max_length=140)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
+            ('due', self.gf('django.db.models.fields.DateTimeField')(db_index=True, null=True, blank=True)),
+            ('fence', self.gf('django.db.models.fields.related.ForeignKey')(related_name='scents', to=orm['api.Fence'])),
+        ))
+        db.send_create_signal(u'api', ['Scent'])
 
 
     def backwards(self, orm):
-        # Adding field 'Fence.location'
-        db.add_column(u'api_fence', 'location',
-                      self.gf('django.contrib.gis.db.models.fields.PolygonField')(default=''),
-                      keep_default=False)
+        # Deleting model 'Fence'
+        db.delete_table(u'api_fence')
 
-        # Deleting field 'Fence._location'
-        db.delete_column(u'api_fence', '_location')
+        # Deleting model 'ScentType'
+        db.delete_table(u'api_scenttype')
+
+        # Deleting model 'Scent'
+        db.delete_table(u'api_scent')
 
 
     models = {

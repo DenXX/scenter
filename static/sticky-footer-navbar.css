@@ -36,8 +36,24 @@ body {
 }
 
 .container{
+  width:100%;
   height: 100%;
   margin-left: 2px;
+}
+
+.row{
+  height: 100%;
+}
+
+.mapcontainer{
+  width:400px;
+  height: 100%;
+  margin-left: 2px;
+}
+
+.messagecontainer{
+  width:400;
+  height: 100% - 50px;
 }
 
 

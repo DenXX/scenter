@@ -14,7 +14,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=128)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('due', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('location', self.gf('django.contrib.gis.db.models.fields.PolygonField')()),
+            ('_location', self.gf('django.contrib.gis.db.models.fields.PolygonField')()),
         ))
         db.send_create_signal(u'api', ['Fence'])
 
@@ -34,7 +34,7 @@ class Migration(SchemaMigration):
             ('content', self.gf('django.db.models.fields.CharField')(max_length=140)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, db_index=True, blank=True)),
             ('due', self.gf('django.db.models.fields.DateTimeField')(db_index=True, null=True, blank=True)),
-            ('fence', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['api.Fence'])),
+            ('fence', self.gf('django.db.models.fields.related.ForeignKey')(related_name='scents', to=orm['api.Fence'])),
         ))
         db.send_create_signal(u'api', ['Scent'])
 
@@ -53,19 +53,19 @@ class Migration(SchemaMigration):
     models = {
         u'api.fence': {
             'Meta': {'object_name': 'Fence'},
+            '_location': ('django.contrib.gis.db.models.fields.PolygonField', [], {}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'due': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'location': ('django.contrib.gis.db.models.fields.PolygonField', [], {}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'})
         },
         u'api.scent': {
-            'Meta': {'object_name': 'Scent'},
+            'Meta': {'ordering': "('created',)", 'object_name': 'Scent'},
             'author': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
             'content': ('django.db.models.fields.CharField', [], {'max_length': '140'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'db_index': 'True', 'blank': 'True'}),
             'due': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
-            'fence': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['api.Fence']"}),
+            'fence': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'scents'", 'to': u"orm['api.Fence']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['api.ScentType']"})

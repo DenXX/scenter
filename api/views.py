@@ -15,23 +15,23 @@ from django.contrib.gis.geos import Polygon, Point
 from api.models import Fence, Scent
 from api.serializers import FenceSerializer, ScentSerializer
 
+class FencesFilter:
+    """ This class contains static methods for filtering fences """
 
-class FenceListView(APIView):
-    """ List fences available in the region """
-
-    def filter_inactive(self, fences_queryset):
+    @staticmethod
+    def filter_inactive(fences_queryset):
         """ Filters incative fences based on creation and due dates """
         return fences_queryset.filter(created__lt=datetime.now(),
             due__gt=datetime.now())
 
-
-    def filter_no_scents(self, fences_queryset):
+    @staticmethod
+    def filter_no_scents(fences_queryset):
         """ Filters fences without messages """
         fences_queryset = fences_queryset.annotate(num_scents=Count('scents'))
         return fences_queryset.filter(num_scents__gt=0)
 
-
-    def filter_by_bbox(self, fences_queryset, bbox):
+    @staticmethod
+    def filter_by_bbox(fences_queryset, bbox):
         """ Filter fences query set by bounding box """
         bbox = bbox.split(',')
         # Check if we have 4 coordinates (top-left + botton-right)
@@ -42,8 +42,8 @@ class FenceListView(APIView):
         # TODO: for some reason overlaps filter doesn't work, but fits better
         return fences_queryset.filter(_location__within=bbox)
 
-
-    def filter_by_location(self, fences_queryset, loc):
+    @staticmethod
+    def filter_by_location(fences_queryset, loc):
         """ Filter fences query set by location """
         loc = loc.split(',')
         # Check if we have 4 coordinates (top-left + botton-right)
@@ -54,30 +54,68 @@ class FenceListView(APIView):
         return fences_queryset.filter(_location__contains=loc)
 
 
+class FenceListView(APIView):
+    """ List fences available in the region """
+
     def get(self, request):
-        fences_queryset = self.filter_inactive(Fence.objects.all())
+        fences_queryset = FencesFilter.filter_inactive(Fence.objects.all())
         if 'ne' in self.request.QUERY_PARAMS:
-            fences_queryset = self.filter_no_scents(fences_queryset)
+            fences_queryset = FencesFilter.filter_no_scents(fences_queryset)
         # Check if bounding box is specified for filtering
         if 'bbox' in self.request.QUERY_PARAMS:
-            fences_queryset = self.filter_by_bbox(fences_queryset,
+            fences_queryset = FencesFilter.filter_by_bbox(fences_queryset,
                 self.request.QUERY_PARAMS['bbox'])
         # Check if a point location is specified for filtering
         if 'loc' in self.request.QUERY_PARAMS:
-            fences_queryset = self.filter_by_location(fences_queryset,
+            fences_queryset = FencesFilter.filter_by_location(fences_queryset,
                 self.request.QUERY_PARAMS['loc'])
         # Create serializer for the list of fences
         serializer = FenceSerializer(fences_queryset, many=True)
         return Response(serializer.data)
 
 
-class FenceView(APIView):
-    """ View for a particular fence """
+    def post(self, request):
+        """ Creates a new fence """
+        serializer = FenceSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, id):
-        try:
-            fence = Fence.objects.get(id=id)
-        except Fence.DoesNotExist:
-            raise Http404
-        serializer = FenceSerializer(fence)
+
+class FenceView(viewsets.ModelViewSet):
+    """ View for a particular fence """
+    queryset = Fence.objects.all()
+    serializer_class = FenceSerializer
+
+class ScentListView(APIView):
+    """ View for a list of scents """
+
+    def filter_inactive(self, scents_queryset):
+        return scents_queryset.filter(created__lt=datetime.now(),
+            due__gt=datetime.now())
+
+
+    def get(self, request, fence_id):
+        """ Returns a list of scents for a fence """
+        scents_queryset = Scent.objects.filter(fence__id=fence_id)
+        scents_queryset = self.filter_inactive(scents_queryset)
+        serializer = ScentSerializer(scents_queryset)
         return Response(serializer.data)
+
+
+    def post(self, request, fence_id):
+        """ Creates new scent for the given fence """
+        # TODO: Check how to change value of serializer instead of this
+        request.DATA[0]['fence'] = fence_id
+        serializer = ScentSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ScentView(viewsets.ModelViewSet):
+    """ View for a particular scent """
+    queryset = Scent.objects.all()
+    serializer_class = ScentSerializer

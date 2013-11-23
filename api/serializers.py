@@ -4,14 +4,17 @@ from rest_framework import serializers
 
 from api.models import Fence, Scent
 
-class FenceSerializer(serializers.HyperlinkedModelSerializer):
+# TODO: HyperlinkedModelSerializers are better
+class FenceSerializer(serializers.ModelSerializer):
     """ Serializer for Fence model """
+    location = serializers.CharField(source='location')
+
     class Meta:
         model = Fence
-        fields = ('id', 'name', 'created', 'due', '_location')
+        fields = ('id', 'name', 'created', 'due', 'location')
 
 
-class ScentSerializer(serializers.HyperlinkedModelSerializer):
+class ScentSerializer(serializers.ModelSerializer):
     """ Serializer for Scent model """
     class Meta:
         model = Scent
