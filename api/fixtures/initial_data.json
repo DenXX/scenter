@@ -1,0 +1,23 @@
+[
+  {
+    "model": "api.ScentType",
+    "pk": 1,
+    "fields": {
+      "name": "Official"
+    }
+  },
+  {
+    "model": "api.ScentType",
+    "pk": 2,
+    "fields": {
+      "name": "Chat"
+    }
+  },
+  {
+    "model": "api.ScentType",
+    "pk": 1,
+    "fields": {
+      "name": "Tip"
+    }
+  }
+]
