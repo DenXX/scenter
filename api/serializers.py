@@ -8,12 +8,12 @@ class FenceSerializer(serializers.HyperlinkedModelSerializer):
     """ Serializer for Fence model """
     class Meta:
         model = Fence
-        fields = ('name', 'created', 'due', 'location')
+        fields = ('id', 'name', 'created', 'due', '_location')
 
 
 class ScentSerializer(serializers.HyperlinkedModelSerializer):
     """ Serializer for Scent model """
     class Meta:
         model = Scent
-        fields = ('author', 'type', 'title', 'content', 'created', 'due',
+        fields = ('id', 'author', 'type', 'title', 'content', 'created', 'due',
             'fence')

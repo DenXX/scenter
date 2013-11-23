@@ -12,5 +12,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # API urls
     url(r'^fences/$', views.FenceListView.as_view()),
+    url(r'^fence/(?P<id>[0-9]+)/$', views.FenceView.as_view()),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )

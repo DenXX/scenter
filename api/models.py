@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.contrib.gis.geos import Polygon, Point
 
 class Fence(models.Model):
     """ Represents a geo-fence (some shape) """
@@ -12,7 +13,17 @@ class Fence(models.Model):
         'fence was created')
     due = models.DateTimeField(blank=True, null=True, help_text=u'When the '
         'fence will become inactive')
-    location = models.PolygonField(help_text=u'Polygon region of the fence')
+    _location = models.PolygonField(help_text=u'Polygon region of the fence')
+
+    # Create methods to convert location representations from numbers to GEOMETRY
+    def set_location(self, location):
+        # TODO: Make it more general, not just circle
+        self._location = Polygon(location)
+
+    def get_location(self):
+        return self._location
+
+    location = property(get_location, set_location)
 
 
 class ScentType(models.Model):
@@ -22,6 +33,7 @@ class ScentType(models.Model):
 
 class Scent(models.Model):
     """ Represents a message with a geo-fence associated with it """
+    objects = models.GeoManager()
 
     # TODO: change this to a ForeignKey to User model
     author = models.CharField(max_length=40, blank=True, null=True, 
