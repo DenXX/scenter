@@ -1,9 +1,7 @@
 from django.contrib.gis.db import models
 
 class Fence(models.Model):
-    '''
-        Represents a geo-fence (some shape)
-    '''
+    """ Represents a geo-fence (some shape) """
 
     # We are using GeoDjango, so need to replace manager
     objects = models.GeoManager()
@@ -18,16 +16,12 @@ class Fence(models.Model):
 
 
 class ScentType(models.Model):
-    '''
-        Represents a type of the message
-    '''
+    """ Represents a type of the message """
     name = models.CharField(max_length=64, help_text=u'Type of the message')
 
 
 class Scent(models.Model):
-    '''
-        Represents a message with a geo-fence associated with it
-    '''
+    """ Represents a message with a geo-fence associated with it """
 
     # TODO: change this to a ForeignKey to User model
     author = models.CharField(max_length=40, blank=True, null=True, 
