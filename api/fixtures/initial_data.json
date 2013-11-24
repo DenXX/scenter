@@ -19,35 +19,5 @@
     "fields": {
       "name": "Tip"
     }
-  },
-  {
-    "model": "api.Fence",
-    "pk": 1,
-    "fields": {
-      "name": "Test Fence #1",
-      "created": "2012-12-16 17:41:28",
-      "due": "2013-12-16 17:41:28",
-      "_location": "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))"
-    }
-  },
-  {
-    "model": "api.Fence",
-    "pk": 2,
-    "fields": {
-      "name": "Test Fence #2",
-      "created": "2012-12-16 17:41:28",
-      "due": "2013-10-16 17:41:28",
-      "_location": "POLYGON((1 1, 10 1, 10 10, 1 10, 1 1))"
-    }
-  },
-  {
-    "model": "api.Fence",
-    "pk": 3,
-    "fields": {
-      "name": "Test Fence #3",
-      "created": "2012-12-16 17:41:28",
-      "due": "2014-10-16 17:41:28",
-      "_location": "POLYGON((15 15, 17 15, 17 17, 15 17, 15 15))"
-    }
   }
 ]

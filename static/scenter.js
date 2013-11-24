@@ -90,6 +90,28 @@ function getPolygonOptions(active) {
                  fillOpacity: 0.1};
 }
 
+function selectFence(fence) {
+    if (currentPolygon) {
+        currentPolygon.setOptions(getPolygonOptions(false));
+    }
+
+    populateMessages(fence);
+    currentPolygon = fence;
+    currentPolygon.setOptions(getPolygonOptions(true));
+}
+
+// TODO: If we move map and fence goes out of scope, we should remove window.
+function showInfoWindow(fence, coords) {
+  var contentString = '<div>' + fence.name + '</div>';
+  if (infoWindow)
+    infoWindow.close();
+  infoWindow = new google.maps.InfoWindow({
+      position: coords,
+      content: contentString
+  });
+  infoWindow.open(map);
+}
+
 function displayFence(fence) {
     if (fence.id in polygons)
         return;
@@ -106,12 +128,8 @@ function displayFence(fence) {
     fence_polygon.name = fence.name;
 
     google.maps.event.addListener(fence_polygon, 'click', function(event){
-        if (currentPolygon) {
-            currentPolygon.setOptions(getPolygonOptions(false));
-        }
-        populateMessages(this);
-        currentPolygon = this;
-        currentPolygon.setOptions(getPolygonOptions(true));
+        selectFence(this);
+        showInfoWindow(this, event.latLng);
     });
     fence_polygon.setMap(map);
     polygons[fence_polygon.id] = fence_polygon;

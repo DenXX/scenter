@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Sticky Footer Navbar Template for Bootstrap</title>
+    <title>Scenter: spread words to a region</title>
 
     <!-- Bootstrap core CSS -->
     <link href="{% static 'dist/css/bootstrap.css' %}" rel="stylesheet">
@@ -38,11 +38,14 @@
     var map;
     var polygons = {};
     var currentPolygon;
+    var createdPolygon = null;
+    var infoWindow = null;
     function initialize() {
       var mapOptions = {
         zoom: 15,
         center: new google.maps.LatLng(33.7920235, -84.325642),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true
       };
       map = new google.maps.Map(document.getElementById('map-canvas'),
           mapOptions);
@@ -60,10 +63,9 @@
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
           // Set event handler for click
           google.maps.event.addListener(polygon, 'click', function(event){
-            populateMessages(this);
-            currentPolygon = this;
+            selectFence(this);
           });
-          currentPolygon = polygon;
+          createdPolygon = polygon;
           $('#fencePolygon').val(convertPolygonForApi(polygon.getPath().getArray()));
           $('#saveFenceDialog').modal('toggle');
         });
@@ -101,24 +103,19 @@
         function test() {
           console.log('hh');
         }
-        function showDel(i) {
-    var numofmessage = $("#messagelist").children().size();
-    for (var j = 1; j <= numofmessage; j++) {
-      if (j != i) {
-        var bb = document.getElementById("button" + j);
-        bb.setAttribute("style","display:none;");
-      }
-    }
-          var b = document.getElementById("button" + i);
-    
-          if (b.style.display == 'none')
-            b.setAttribute("style","display:inline;");
-          else
-            b.setAttribute("style","display:none;");
-        }
+  function showbutton(i) {
+    var b = document.getElementById("button" + i);
+    b.setAttribute("style","display:inline;");
+  }
+  function hidebutton(i) {
+    var b = document.getElementById("button" + i);
+                b.setAttribute("style","display:none;");
+  }
         function delMessage(i) {
           var m = document.getElementById("m" + i);
           m.setAttribute("style","display:none;");
+    mid = m.getAttribute("mid");
+    deleteMessages(mid);
         }
   function appendMessage(txt) {
     var ml = document.getElementById("messagelist");
@@ -131,25 +128,26 @@
                 nm.setAttribute("class","list-group-item");
                 nm.setAttribute("id", "m" + numofmessage);
                 nm.setAttribute("href", "#");
-                nm.setAttribute("onclick", "showDel(" + numofmessage + ")");
+                nm.setAttribute("onmouseover", "showbutton(" + numofmessage + ")");
+    nm.setAttribute("onmouseout", "hidebutton(" + numofmessage + ")");
 
                 var mb = document.createElement("h4");
                 mb.setAttribute("class","list-group-item-heading");
                 var t = document.createTextNode(txt);
+
                 var delButton = document.createElement("button");
                 delButton.setAttribute("id","button" + numofmessage);
                 delButton.setAttribute("type", "button");
-                delButton.setAttribute("class", "btn btn-danger btn-block");
+                delButton.setAttribute("class", "close");
                 delButton.setAttribute("style", "display:none");
 
                 delButton.setAttribute("onclick", "delMessage(" + numofmessage + ")");
 
-                var bt = document.createTextNode("Delete");
-                delButton.appendChild(bt);
+                delButton.innerHTML = "&times;";
 
                 mb.appendChild(t);
-                nm.appendChild(mb);
                 nm.appendChild(delButton);
+                nm.appendChild(mb);
                 ml.insertBefore(nm, ml.firstChild);
     return "m" + numofmessage;
   }
@@ -188,18 +186,6 @@
               <li class="active"><a href="#">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li class="divider"></li>
-                  <li class="dropdown-header">Nav header</li>
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -216,19 +202,11 @@
 
     <div class="spacer5"></div>
     
-    <button type="button" class="btn btn-success btn-block" onclick="sendMessage()">Scent</button>
+    <button type="button" class="btn btn-success btn-block" onclick="sendMessage()">Leave scent</button>
 
     <div class="spacer15"></div>
 
     <div id="messagelist" class="list-group">
-                        <a id="m1" href="#" onclick="showDel(1)" class="list-group-item">
-                                <button id="button1" type="button" onclick="delMessage(1)" class="close">&times;</button>
-                                <h4 class="list-group-item-heading">List group item heading</h4>
-                        </a>
-                        <a id="m2" href="#" onclick="showDel(2)" class="list-group-item">
-                                <button id="button1" type="button" onclick="delMessage(2)" class="close">&times;</button>
-                                <h4 class="list-group-item-heading">List group item heading</h4>
-                        </a>
                 </div>
 
   </div>
@@ -304,8 +282,10 @@
                // TODO: what if it fails?...
                success: function(json) {
                   // Set id for the current polygon
-                  currentPolygon.id = json.id;
-                  polygons[json.id] = currentPolygon;
+                  createdPolygon.id = json.id;
+                  createdPolygon.name = json.name;
+                  polygons[json.id] = createdPolygon;
+                  selectFence(createdPolygon);
               }
           });
 
