@@ -1,4 +1,18 @@
-
+function deleteMessages(mid){
+        $.ajax({
+        // TODO: need to use url Django tag?
+        url: 'api/scent/' + mid + '/',
+        cache: false,
+        type: 'DELETE',
+                dataType: "json",
+                success: function(data){
+                        console.log('deleted');
+                },
+                error: function(){
+                        console.log('error delete');
+                }
+        });
+}
 function convertPolygonForApi(polygon_coords) {
     // Add start point to the polygon to close it
     polygon_coords.push(polygon_coords[0]);
@@ -89,6 +103,7 @@ function displayFence(fence) {
     fence_polygon = new google.maps.Polygon({paths: vertices});
     fence_polygon.setOptions(getPolygonOptions(false));
     fence_polygon.id = fence.id;
+    fence_polygon.name = fence.name;
 
     google.maps.event.addListener(fence_polygon, 'click', function(event){
         if (currentPolygon) {

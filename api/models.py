@@ -52,4 +52,4 @@ class Scent(models.Model):
         related_name='scents')
 
     class Meta:
-        ordering = ('created',)
+        ordering = ('-created',)

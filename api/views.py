@@ -119,3 +119,19 @@ class ScentView(viewsets.ModelViewSet):
     """ View for a particular scent """
     queryset = Scent.objects.all()
     serializer_class = ScentSerializer
+
+
+class ScentsLocationView(APIView):
+    """ Returns all scents for a location """
+
+    def get(self, request):
+        if 'loc' not in request.QUERY_PARAMS:
+            raise Http404
+
+        location = request.QUERY_PARAMS['loc']
+        fences = Fence.objects.all()
+        fences = FencesFilter.filter_by_location(fences, location)
+        scents = Scent.objects.filter(fence__in=fences)
+        scents = scents.extra(order_by=['-created'])
+        serializer = ScentSerializer(scents, many=True)
+        return Response(serializer.data)

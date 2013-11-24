@@ -29,7 +29,7 @@ body {
 /* Not required for template or sticky footer method. */
 
 #wrap > .container {
-  padding: 50px 2px 0;
+  padding: 50px 0px 0;
 }
 .container .credit {
   margin: 20px 0;
@@ -38,7 +38,7 @@ body {
 .container{
   width:100%;
   height: 100%;
-  margin-left: 2px;
+  margin-left: 0px;
 }
 
 .row{
@@ -48,11 +48,11 @@ body {
 .mapcontainer{
   width:400px;
   height: 100%;
-  margin-left: 2px;
+  margin-left: 0px;
 }
 
 .messagecontainer{
-  width:400;
+  width:390px;
   height: 100% - 50px;
   overflow: auto;
 }
