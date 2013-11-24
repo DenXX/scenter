@@ -18,11 +18,17 @@ function populateMessages(fencePolygon){
                 success: function(data){
                         messagelist = data;
 
-                        $('#messagelist').html("");
+			if (messagelist.length > 0) {
+                        	$('#messagelist').html("");
                         
-                        $.each(messagelist, function(index, message) {
-                                appendMessage(messagelist[index].content);
-                        });
+                        	$.each(messagelist, function(index, message) {
+                        	        elementid = appendMessage(messagelist[index].content);
+					var m = document.getElementById(elementid);
+					m.setAttribute("mid", messagelist[index].id);
+                        	});
+			}
+			else
+				$('#messagelist').html("Nothing is scenting here.");
                 },
                 error: function(){
                         $('#messagelist').html("Nothing is scenting here.");
@@ -31,7 +37,7 @@ function populateMessages(fencePolygon){
 }
 
 
-function postMessage(fencePolygon, text) {
+function postMessage(fencePolygon, text, eid) {
     scent = null;
     var due = new Date();
     due.setDate(due.getDate() + 2);
@@ -44,11 +50,86 @@ function postMessage(fencePolygon, text) {
                "due": due.toISOString(), "fence": fencePolygon.id},
         dataType: "json",
         success: function(data){
-            return data.id;
+            var me = document.getElementById(eid);
+	    me.setAttribute("mid", data.id);
+	    console.log(data.id);
         },
         error: function(){
-            alert("FUCK!");
+            alert("Something happened here... Not sure what, but it failed. :( Sorry");
         }
     });
     return -1;
+}
+
+function getPolygonOptions(active) {
+    if (active)
+        return {strokeColor: 'green',
+                strokeOpacity: 1.0,
+                strokeWeight: 3,
+                fillColor: 'green',
+                fillOpacity: 0.5};
+    else
+        return { strokeColor: 'green',
+                 strokeOpacity: 0.8,
+                 strokeWeight: 1,
+                 fillColor: 'green',
+                 fillOpacity: 0.1};
+}
+
+function displayFence(fence) {
+    if (fence.id in polygons)
+        return;
+    // Define the LatLng coordinates for the polygon's path.
+    var vertices = new Array();
+    var fence_location = JSON.parse(fence.location);
+    for (var i = 0; i < fence_location.coordinates[0].length; ++i) {
+        vertices.push(new google.maps.LatLng(fence_location.coordinates[0][i][0],
+            fence_location.coordinates[0][i][1]));
+    }
+    fence_polygon = new google.maps.Polygon({paths: vertices});
+    fence_polygon.setOptions(getPolygonOptions(false));
+    fence_polygon.id = fence.id;
+
+    google.maps.event.addListener(fence_polygon, 'click', function(event){
+        if (currentPolygon) {
+            currentPolygon.setOptions(getPolygonOptions(false));
+        }
+        populateMessages(this);
+        currentPolygon = this;
+        currentPolygon.setOptions(getPolygonOptions(true));
+    });
+    fence_polygon.setMap(map);
+    polygons[fence_polygon.id] = fence_polygon;
+}
+
+function hideInvisibleFences(boundingBox) {
+    for (var id in polygons) {
+        path = polygons[id].getPath();
+        for (var i = 0; i < path.getLength(); ++i) {
+            if (!boundingBox.contains(path.getAt(i))) {
+                polygons[id].setMap(null);
+                delete polygons[id];
+                break;
+            }
+        }
+    }
+}
+
+function updateFences(boundingBox) {
+    hideInvisibleFences(boundingBox);
+
+    var bbox = boundingBox.getNorthEast().lat()+','+boundingBox.getNorthEast().lng()+
+        ','+boundingBox.getSouthWest().lat()+','+boundingBox.getSouthWest().lng();
+    $.ajax({
+        url: 'api/fences/?bbox=' + bbox,
+        cache: false,
+        type: 'GET',
+        dataType: "json",
+        success: function(data){
+            data.forEach(displayFence);
+        },
+        error: function(){
+            alert("Something happened here... Not sure what, but it failed. :( Sorry");
+        }
+    });
 }

@@ -36,6 +36,7 @@
     <script src="{% static 'scenter.js' %}"></script>
     <script>
     var map;
+    var polygons = {};
     var currentPolygon;
     function initialize() {
       var mapOptions = {
@@ -60,11 +61,26 @@
           // Set event handler for click
           google.maps.event.addListener(polygon, 'click', function(event){
             populateMessages(this);
+            currentPolygon = this;
           });
           currentPolygon = polygon;
           $('#fencePolygon').val(convertPolygonForApi(polygon.getPath().getArray()));
           $('#saveFenceDialog').modal('toggle');
         });
+
+        google.maps.event.addListenerOnce(map,'tilesloaded', function() {
+          updateFences(map.getBounds());
+        });
+
+        google.maps.event.addListener(map, "dragend", function() {
+          updateFences(map.getBounds());
+        });
+
+        google.maps.event.addListener(map, "zoom_changed", function() {
+          updateFences(map.getBounds());
+        });
+        
+        updateFences(map.getBounds());
     }
     google.maps.event.addDomListener(window, 'load', initialize);
     </script>
@@ -72,7 +88,7 @@
     <script>
         window.onload=function(){
         	adjustMessage();
-		populateMessages(null);
+		//populateMessages(null);
         };
         window.onresize = function(event) {
         	adjustMessage();
@@ -107,6 +123,9 @@
 	function appendMessage(txt) {
 		var ml = document.getElementById("messagelist");
                 var numofmessage = $("#messagelist").children().size() + 1;
+		if (numofmessage == 1) {
+			$('#messagelist').html("");
+		}
 
                 var nm = document.createElement("a");
                 nm.setAttribute("class","list-group-item");
@@ -132,14 +151,15 @@
                 nm.appendChild(mb);
                 nm.appendChild(delButton);
                 ml.insertBefore(nm, ml.firstChild);
+		return "m" + numofmessage;
 	}
 	function sendMessage() {
 		var m = document.getElementById("newMessage");
 		var txt = m.value;
 		if (/\S/.test(txt)) {
-			appendMessage(txt);
-      // post message to the API
-      id = postMessage(currentPolygon, txt);
+			elementid = appendMessage(txt);
+			// post message to the API
+			postMessage(currentPolygon, txt, elementid);
 		}
 		m.value = "";
 	}
@@ -271,6 +291,7 @@
     <script src="{% static 'dist/js/bootstrap.min.js' %}"></script>
     <script>
       $(document).ready(function(){
+
         $('#saveFence').click(function() {
           var disabled = $(':input:disabled').removeAttr('disabled');
           $('#fenceDue').val(new Date($('#fenceDue').val()).toISOString());
@@ -284,6 +305,7 @@
                success: function(json) {
                   // Set id for the current polygon
                   currentPolygon.id = json.id;
+                  polygons[json.id] = currentPolygon;
               }
           });
 
