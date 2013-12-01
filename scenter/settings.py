@@ -1,5 +1,7 @@
 # Django settings for scenter project.
 
+PROJECT_ROOT = '/Users/denis/Projects/scenter'
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -64,7 +66,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/var/www/scenter/static/'
+STATIC_ROOT = PROJECT_ROOT + '/static_root/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -76,7 +78,7 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     
-    #'/var/www/scenter/static',
+    PROJECT_ROOT + '/scenter_static/',
 )
 
 # List of finder classes that know how to find static files in
@@ -114,7 +116,7 @@ ROOT_URLCONF = 'scenter.urls'
 WSGI_APPLICATION = 'scenter.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '/var/www/scenter/template',
+    '/Users/denis/Projects/scenter/template',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
