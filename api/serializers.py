@@ -1,8 +1,18 @@
 """ This file declares some serializes for RESTful API model serialization """
 
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import Fence, Scent
+from api.models import *
+
+class UserSerializer(serializers.ModelSerializer):
+    """ Serializer for user with a profile """
+    username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
+
+    class Meta:
+        model = Profile
+        fields = ('username', 'email')
 
 # TODO: HyperlinkedModelSerializers are better
 class FenceSerializer(serializers.ModelSerializer):
@@ -18,5 +28,4 @@ class ScentSerializer(serializers.ModelSerializer):
     """ Serializer for Scent model """
     class Meta:
         model = Scent
-        fields = ('id', 'author', 'type', 'title', 'content', 'created', 'due',
-            'fence')
+        fields = ('id', 'author', 'content', 'created', 'due', 'fence')

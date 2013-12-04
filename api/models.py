@@ -1,5 +1,21 @@
+from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Polygon, Point, GEOSGeometry
+
+import scenter.settings
+
+class Profile(models.Model):
+    """ Stores information on user profile """
+
+    def upload_to(instance, filename):
+        return setting.MEDIA_ROOT + '%s/%s' % (instance.user.username, filename)
+
+    user = models.OneToOneField(User, primary_key=True, related_name='profile',
+        help_text=u'Profile for the given user')
+    userpic = models.ImageField(upload_to=upload_to, help_text=u'Userpic')
+    sniffing = models.ManyToManyField(User, related_name='sniffers',
+        help_text=u'A list of users the current users follows/sniffs')
+
 
 class Fence(models.Model):
     """ Represents a geo-fence (some shape) """
@@ -17,8 +33,6 @@ class Fence(models.Model):
 
     # Create methods to convert location representations from numbers to GEOMETRY
     def set_location(self, location):
-        # TODO: Make it more general, not just circle
-        #self._location = fromstr("POLYGON(" + location + ")")
         self._location = GEOSGeometry(location)
 
     def get_location(self):
@@ -27,21 +41,13 @@ class Fence(models.Model):
     location = property(get_location, set_location)
 
 
-class ScentType(models.Model):
-    """ Represents a type of the message """
-    name = models.CharField(max_length=64, help_text=u'Type of the message')
-
-
 class Scent(models.Model):
     """ Represents a message with a geo-fence associated with it """
     objects = models.GeoManager()
 
     # TODO: change this to a ForeignKey to User model
-    author = models.CharField(max_length=40, blank=True, null=True, 
+    author = models.ForeignKey(User, related_name='scents',
         help_text=u'Author of the message')
-    type = models.ForeignKey(ScentType, help_text=u'The type of a message')
-    title = models.CharField(max_length=40, blank=False, help_text=u'Title of '
-        'the message')
     content = models.CharField(max_length=140, blank=False, help_text=u'Body '
         'of the message')
     created = models.DateTimeField(auto_now_add=True, db_index=True,

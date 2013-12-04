@@ -8,6 +8,7 @@ from api import views
 admin.autodiscover()
 
 router = DefaultRouter()
+router.register(r'user', views.UserView)
 router.register(r'scent', views.ScentView)
 router.register(r'fence', views.FenceView)
 
@@ -18,8 +19,7 @@ router.register(r'fence', views.FenceView)
 urlpatterns = patterns('',
     # API urls
     url(r'^fences/$', views.FenceListView.as_view(), name='fences_view'),
-    url(r'^scents/$', views.ScentsLocationView.as_view()),
-    url(r'^scents/(?P<fence_id>[0-9]+)', views.ScentListView.as_view()),
+    url(r'^scents/', views.ScentListView.as_view()),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
