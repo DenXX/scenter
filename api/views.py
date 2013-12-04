@@ -6,6 +6,7 @@ from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import permissions
 from rest_framework import status
 
 from datetime import datetime
@@ -19,12 +20,15 @@ from api.utils import FencesFilter
 
 class UserView(viewsets.ModelViewSet):
     """ View for the User model """
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     queryset = Profile.objects.all()
     serializer_class = UserSerializer
 
 
 class FenceListView(APIView):
     """ List fences available in the region """
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get(self, request):
         fences_queryset = FencesFilter.filter_inactive(Fence.objects.all())
@@ -54,12 +58,16 @@ class FenceListView(APIView):
 
 class FenceView(viewsets.ModelViewSet):
     """ View for a particular fence """
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     queryset = Fence.objects.all()
     serializer_class = FenceSerializer
 
 
 class ScentListView(APIView):
     """ View for a list of scents """
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
 
     def filter_inactive(self, scents_queryset):
         return scents_queryset.filter(created__lt=datetime.now(),
@@ -100,5 +108,7 @@ class ScentListView(APIView):
 
 class ScentView(viewsets.ModelViewSet):
     """ View for a particular scent """
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
     queryset = Scent.objects.all()
     serializer_class = ScentSerializer
