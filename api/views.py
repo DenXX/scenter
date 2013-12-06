@@ -11,6 +11,7 @@ from rest_framework import status
 
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.contrib.gis.geos import Polygon, Point
 
 from api.models import Fence, Scent, Profile
@@ -22,8 +23,27 @@ class UserView(viewsets.ModelViewSet):
     """ View for the User model """
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    queryset = Profile.objects.all()
+    lookup_field = 'username'       # Use username instead of pk
+    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+    def create(self, request):
+        serializer = UserUpdateSerializer(data=request.DATA)
+        if serializer.is_valid():
+            user = serializer.save()
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def update(self, request, pk):
+        serializer = UserUpdateSerializer(data=request.DATA)
+        if serializer.is_valid():
+            user = serializer.save()
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FenceListView(APIView):
