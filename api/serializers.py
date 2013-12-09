@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ScenterUser
-        fields = ('username', 'email', 'first_name', 'last_name', 'userpic')
+        fields = ('username', 'email', 'first_name', 'last_name', 'userpic', 'wormholes')
         read_only_fields = ('username',)
 
 
@@ -60,7 +60,8 @@ class UserUpdateSerializer(UserSerializer):
 
     class Meta:
         model = ScenterUser
-        fields = ('username', 'password', 'password_confirm', 'email', 'first_name', 'last_name', 'userpic')
+        fields = ('username', 'password', 'password_confirm', 'email', 'first_name', 'last_name', 'userpic',
+            'wormholes')
 
 
 # TODO: HyperlinkedModelSerializers are better

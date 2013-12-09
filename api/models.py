@@ -5,27 +5,14 @@ from django.contrib.gis.geos import Polygon, Point, GEOSGeometry
 
 from scenter import settings
 
-class ScenterUser(AbstractUser):
-    """ Stores information on user profile """
-
-    def upload_to(instance, filename):
-        return setting.MEDIA_ROOT + '%s/%s' % (instance.user.username, filename)
-
-    userpic = models.ImageField(blank=True, null=True, upload_to=upload_to, help_text=u'Userpic')
-    sniffing = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='sniffers',
-        help_text=u'A list of users the current users follows/sniffs')
-
-    # Need this dirty trick, because otherwise to_native method of UserUpdateSerializer fails
-    @property
-    def password_confirm(self):
-        return self.password
-
 class Fence(models.Model):
     """ Represents a geo-fence (some shape) """
 
     # We are using GeoDjango, so need to replace manager
     objects = models.GeoManager()
 
+    id = models.CharField(max_length=128, primary_key=True,
+        help_text=u'ID of the current Fence')
     name = models.CharField(max_length=128, blank=False, help_text=u'The name '
         'of the fence')
     created = models.DateTimeField(auto_now_add=True, help_text=u'When the '
@@ -42,6 +29,25 @@ class Fence(models.Model):
         return self._location.json
 
     location = property(get_location, set_location)
+
+
+class ScenterUser(AbstractUser):
+    """ Stores information on user profile """
+
+    def upload_to(instance, filename):
+        return setting.MEDIA_ROOT + '%s/%s' % (instance.user.username, filename)
+
+    userpic = models.ImageField(blank=True, null=True, upload_to=upload_to, help_text=u'Userpic')
+    wormholes = models.ManyToManyField(Fence, related_name='wormhole_users',
+        help_text=u'Wormhole allows a user to receive messages from a fence not in his current location')
+
+    # Need this dirty trick, because otherwise to_native method of UserUpdateSerializer fails
+    @property
+    def password_confirm(self):
+        return self.password
+
+    class Meta:
+        ordering = ('username',)
 
 
 class Scent(models.Model):

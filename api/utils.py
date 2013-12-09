@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.gis.geos import Polygon, Point
+from django.db.models import Q
 
 from api.models import Fence, Scent
 
@@ -11,8 +12,8 @@ class FencesFilter:
     @staticmethod
     def filter_inactive(fences_queryset):
         """ Filters incative fences based on creation and due dates """
-        return fences_queryset.filter(created__lt=datetime.now(),
-            due__gt=datetime.now())
+        return fences_queryset.filter(created__lt=datetime.now()).\
+        	filter(Q(due__gt=datetime.now()) | Q(due__isnull=True))
 
     @staticmethod
     def filter_no_scents(fences_queryset):

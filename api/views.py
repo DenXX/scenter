@@ -1,6 +1,6 @@
 """ Declares views for the API """
 
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import Http404
 
 from rest_framework import viewsets
@@ -75,8 +75,9 @@ class ScentListView(APIView):
 
 
     def filter_inactive(self, scents_queryset):
-        return scents_queryset.filter(created__lt=datetime.now(),
-            due__gt=datetime.now())
+        """ Filter dead scents """
+        return scents_queryset.filter(created__lt=datetime.now()).\
+            filter(Q(due__gt=datetime.now()) | Q(due__isnull=True))
 
 
     def get(self, request, fence_id):
@@ -92,9 +93,10 @@ class ScentListView(APIView):
             location = request.QUERY_PARAMS['loc']
             fences = Fence.objects.all()
             fences = FencesFilter.filter_by_location(fences, location)
-            scents = Scent.objects.filter(fence__in=fences)
-            scents = scents.extra(order_by=['-created'])
-            serializer = ScentSerializer(scents, many=True)
+            scents_queryset = Scent.objects.filter(fence__in=fences)
+            scents_queryset = self.filter_inactive(scents_queryset)
+            scents_queryset = scents.extra(order_by=['-created'])
+            serializer = ScentSerializer(scents_queryset, many=True)
             return Response(serializer.data)
         # Otherwise raise 404
         raise Http404
