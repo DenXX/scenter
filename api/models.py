@@ -1,21 +1,24 @@
-from django.contrib.auth.models import User
+
+from django.contrib.auth.models import AbstractUser
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Polygon, Point, GEOSGeometry
 
-import scenter.settings
+from scenter import settings
 
-class Profile(models.Model):
+class ScenterUser(AbstractUser):
     """ Stores information on user profile """
 
     def upload_to(instance, filename):
         return setting.MEDIA_ROOT + '%s/%s' % (instance.user.username, filename)
 
-    user = models.OneToOneField(User, primary_key=True, related_name='profile',
-        help_text=u'Profile for the given user')
-    userpic = models.ImageField(upload_to=upload_to, help_text=u'Userpic')
-    sniffing = models.ManyToManyField(User, related_name='sniffers',
+    userpic = models.ImageField(blank=True, null=True, upload_to=upload_to, help_text=u'Userpic')
+    sniffing = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='sniffers',
         help_text=u'A list of users the current users follows/sniffs')
 
+    # Need this dirty trick, because otherwise to_native method of UserUpdateSerializer fails
+    @property
+    def password_confirm(self):
+        return self.password
 
 class Fence(models.Model):
     """ Represents a geo-fence (some shape) """
@@ -46,7 +49,7 @@ class Scent(models.Model):
     objects = models.GeoManager()
 
     # TODO: change this to a ForeignKey to User model
-    author = models.ForeignKey(User, related_name='scents',
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='scents',
         help_text=u'Author of the message')
     content = models.CharField(max_length=140, blank=False, help_text=u'Body '
         'of the message')

@@ -11,10 +11,9 @@ from rest_framework import status
 
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.contrib.gis.geos import Polygon, Point
 
-from api.models import Fence, Scent, Profile
+from api.models import *
 from api.serializers import *
 from api.utils import FencesFilter
 
@@ -24,26 +23,12 @@ class UserView(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     lookup_field = 'username'       # Use username instead of pk
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset = ScenterUser.objects.all()
 
-
-    def create(self, request):
-        serializer = UserUpdateSerializer(data=request.DATA)
-        if serializer.is_valid():
-            user = serializer.save()
-            serializer = UserSerializer(user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-    def update(self, request, pk):
-        serializer = UserUpdateSerializer(data=request.DATA)
-        if serializer.is_valid():
-            user = serializer.save()
-            serializer = UserSerializer(user)
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PUT', 'PATCH'):
+            return UserUpdateSerializer
+        return UserSerializer
 
 
 class FenceListView(APIView):

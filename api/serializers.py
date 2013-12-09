@@ -1,6 +1,5 @@
 """ This file declares some serializes for RESTful API model serialization """
 
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
@@ -8,39 +7,60 @@ from api.models import *
 
 class UserSerializer(serializers.ModelSerializer):
     """ Serializer for user with a profile """
-    # username = serializers.CharField(source='user.username')
-    # email = serializers.CharField(source='user.email')
+    # TODO: username should be read-only, but then we cannot specify it
+    # on POST
 
     class Meta:
-        model = User
-        fields = ('username', 'email')
+        model = ScenterUser
+        fields = ('username', 'email', 'first_name', 'last_name', 'userpic')
+        read_only_fields = ('username',)
 
 
 class UserUpdateSerializer(UserSerializer):
     """ Serializer for creating or updating a user """
-    password = serializers.CharField(required=True, max_length=128, min_length=4)
-    password_confirm = serializers.CharField(required=True, max_length=128, min_length=4)
+    password = serializers.CharField(max_length=128, min_length=4)
+    password_confirm = serializers.CharField(max_length=128, min_length=4)
 
     def validate(self, attrs):
         """ Validates that password and password_confirm are the same """
-        if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError("Passwords don't match")
+        if 'password' in attrs:
+            if 'password_confirm' not in attrs:
+                raise serializers.ValidationError("password_confirm field is required")
+            if attrs['password'] != attrs['password_confirm']:
+                raise serializers.ValidationError("Passwords don't match")
         return attrs
 
-    def restore_object(self, attrs, instance=None):
+    def restore_object(self, attrs, instance):
         """ restore_objects needs special treatmeant for users """
         if instance == None:
-            instance = User.objects.create_user(username=attrs['username'],
-                email=attrs['email'], password=attrs['password'])
+            instance = ScenterUser.objects.create_user(username=attrs['username'],
+                password=attrs['password'])
+            del attrs['password_confirm']
+            del attrs['password']
         else:
-            instance.set_password(attrs['password'])
-        del attrs['password_confirm']
-        del attrs['password']
-        return super(UserSerializer, self).restore_object(attrs, instance)
+            if 'password' in attrs:
+                instance.set_password(attrs['password'])
+                del attrs['password_confirm']
+                del attrs['password']
+        return super(UserUpdateSerializer, self).restore_object(attrs, instance)
+
+    def save_object(self, obj, **kwargs):
+        if 'force_insert' in kwargs:
+            del kwargs['force_insert']
+        obj.save(**kwargs)
+
+    def to_native(self, obj):
+        res = super(UserUpdateSerializer, self).to_native(obj)
+        del res['password']
+        del res['password_confirm']
+        # TODO: Probably there is a better way...
+        res.fields['password']._value = ''
+        res.fields['password_confirm']._value = ''
+        return res
 
     class Meta:
-        model = User
-        fields = ('username', 'email', 'password', 'password_confirm')
+        model = ScenterUser
+        fields = ('username', 'password', 'password_confirm', 'email', 'first_name', 'last_name', 'userpic')
 
 
 # TODO: HyperlinkedModelSerializers are better
