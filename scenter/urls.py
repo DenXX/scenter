@@ -9,12 +9,8 @@ admin.autodiscover()
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    #url(r'^admin/', include(admin.site.urls)),
-    #url(r'^scenter/$', 'website.views.home'),
-    url(r'^$', TemplateView.as_view(template_name="base.html")),
-    url(r'^about$', TemplateView.as_view(template_name="about.html")),
-    url(r'^1$', TemplateView.as_view(template_name="base_copy.html")),
-    url(r'^admin/', include(admin.site.urls)),
+    # Website urls
+    url(r'^', include('website.urls')),
 
     # API urls
     url(r'^api/', include('api.urls')),

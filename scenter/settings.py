@@ -96,7 +96,17 @@ SECRET_KEY = 'li(@8)ip32ogo!w1#7g@=k!tg9s6wbj!(*7*)k4p8jl=c_*7sq'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages"
 )
 
 MIDDLEWARE_CLASSES = (
@@ -132,12 +142,15 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'rest_framework',
+    'bootstrap3',   
     'south',
     'website',
     'api',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'api.ScenterUser'
 
