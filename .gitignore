@@ -3,3 +3,5 @@
 *.pyc
 local_settings.py
 static_root/
+migrations/
+.DS_Store/
