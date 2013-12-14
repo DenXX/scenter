@@ -1,0 +1,16 @@
+{% extends 'registration/registration_base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+Sign up
+{% endblock %}
+
+{% block main_content %}
+	<form action='{% url 'registration_register' %}' method='POST' class='form'>
+	{% csrf_token %}
+	{% bootstrap_form form %}
+	{% buttons %}
+		<button type="submit" class="btn btn-success">Sign Up</button>
+	{% endbuttons %}
+	</form>
+{% endblock %}

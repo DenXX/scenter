@@ -1,0 +1,16 @@
+{% extends 'registration/registration_base.html' %}
+{% load bootstrap3 %}
+
+{% block header %}
+Please login
+{% endblock %}
+
+{% block main_content %}
+	<form action="{% url 'auth_login' %}" method="POST" class="form">
+	{% csrf_token %}
+	{% bootstrap_form form %}
+	{% buttons %}
+		<button type="submit" class="btn btn-success">Login</button>&nbsp;&nbsp;<a href="{{ auth_pwd_reset_url }}">Forgot</a> your password?&nbsp;<a href="{{ register_url }}">Need an account</a>?</p>
+	{% endbuttons %}
+	</form>
+{% endblock %}

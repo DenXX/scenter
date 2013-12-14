@@ -142,13 +142,24 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'rest_framework',
-    'bootstrap3',   
+    'registration',
+    'bootstrap3',
     'south',
     'website',
     'api',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+ACCOUNT_ACTIVATION_DAYS = 7
+
+# Email settings
+DEFAULT_FROM_EMAIL = 'denissavenkov@gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'denissavenkov@gmail.com'
+EMAIL_HOST_PASSWORD = 'Barsik%777'
+EMAIL_PORT = 587
 
 LOGIN_REDIRECT_URL = '/'
 

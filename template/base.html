@@ -50,10 +50,10 @@
                   <ul class="nav navbar-nav">
                   <li><img src="https://pbs.twimg.com/profile_images/1153406629/IMG_5115_small_normal.jpg" class="img-rounded" /></li>
                   <li><a href="{% url 'profile' %}" class="navbar-link">{{ request.user.username }}</a></li>
-                  <li><a href="{% url 'logout' %}" class="navbar-link">Sign out</a></li>
+                  <li><a href="{% url 'auth_logout' %}" class="navbar-link">Sign out</a></li>
                   <ul>
                 {% else %}
-                  <form action="{% url 'login' %}" method="POST" class="navbar-form" role="form">
+                  <form action="{% url 'auth_login' %}" method="POST" class="navbar-form" role="form">
                     {% csrf_token %}
                     <div class="form-group">
                       <input type="text" placeholder="Username" name="username" class="form-control">
@@ -62,7 +62,7 @@
                       <input type="password" placeholder="Password" name="password" class="form-control">
                     </div>
                     <button type="submit" class="btn btn-success">Sign in</button>
-                    <a href="{% url 'signup' %}" class="navbar-right btn btn-link navbar-link">Sign up</a>
+                    <a href="{% url 'registration_register' %}" class="navbar-right btn btn-link navbar-link">Sign up</a>
                   </form>
                 {% endif %}
               </div>
