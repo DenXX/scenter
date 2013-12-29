@@ -7,7 +7,21 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    needed_by = (
+        ('authtoken', '0001_initial'),
+    )
+
     def forwards(self, orm):
+        # Adding model 'Fence'
+        db.create_table(u'api_fence', (
+            ('id', self.gf('django.db.models.fields.CharField')(max_length=128, primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=128)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('due', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('_location', self.gf('django.contrib.gis.db.models.fields.PolygonField')()),
+        ))
+        db.send_create_signal(u'api', ['Fence'])
+
         # Adding model 'ScenterUser'
         db.create_table(u'api_scenteruser', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -21,7 +35,7 @@ class Migration(SchemaMigration):
             ('is_staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('date_joined', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('userpic', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
+            ('userpic', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
         ))
         db.send_create_signal(u'api', ['ScenterUser'])
 
@@ -43,24 +57,14 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['scenteruser_id', 'permission_id'])
 
-        # Adding M2M table for field sniffing on 'ScenterUser'
-        m2m_table_name = db.shorten_name(u'api_scenteruser_sniffing')
+        # Adding M2M table for field wormholes on 'ScenterUser'
+        m2m_table_name = db.shorten_name(u'api_scenteruser_wormholes')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('from_scenteruser', models.ForeignKey(orm[u'api.scenteruser'], null=False)),
-            ('to_scenteruser', models.ForeignKey(orm[u'api.scenteruser'], null=False))
+            ('scenteruser', models.ForeignKey(orm[u'api.scenteruser'], null=False)),
+            ('fence', models.ForeignKey(orm[u'api.fence'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['from_scenteruser_id', 'to_scenteruser_id'])
-
-        # Adding model 'Fence'
-        db.create_table(u'api_fence', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=128)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('due', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('_location', self.gf('django.contrib.gis.db.models.fields.PolygonField')()),
-        ))
-        db.send_create_signal(u'api', ['Fence'])
+        db.create_unique(m2m_table_name, ['scenteruser_id', 'fence_id'])
 
         # Adding model 'Scent'
         db.create_table(u'api_scent', (
@@ -75,6 +79,9 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
+        # Deleting model 'Fence'
+        db.delete_table(u'api_fence')
+
         # Deleting model 'ScenterUser'
         db.delete_table(u'api_scenteruser')
 
@@ -84,11 +91,8 @@ class Migration(SchemaMigration):
         # Removing M2M table for field user_permissions on 'ScenterUser'
         db.delete_table(db.shorten_name(u'api_scenteruser_user_permissions'))
 
-        # Removing M2M table for field sniffing on 'ScenterUser'
-        db.delete_table(db.shorten_name(u'api_scenteruser_sniffing'))
-
-        # Deleting model 'Fence'
-        db.delete_table(u'api_fence')
+        # Removing M2M table for field wormholes on 'ScenterUser'
+        db.delete_table(db.shorten_name(u'api_scenteruser_wormholes'))
 
         # Deleting model 'Scent'
         db.delete_table(u'api_scent')
@@ -100,7 +104,7 @@ class Migration(SchemaMigration):
             '_location': ('django.contrib.gis.db.models.fields.PolygonField', [], {}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'due': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'id': ('django.db.models.fields.CharField', [], {'max_length': '128', 'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'})
         },
         u'api.scent': {
@@ -113,7 +117,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         u'api.scenteruser': {
-            'Meta': {'object_name': 'ScenterUser'},
+            'Meta': {'ordering': "('username',)", 'object_name': 'ScenterUser'},
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
@@ -125,10 +129,10 @@ class Migration(SchemaMigration):
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'sniffing': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'sniffers'", 'symmetrical': 'False', 'to': u"orm['api.ScenterUser']"}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'}),
-            'userpic': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'})
+            'userpic': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'wormholes': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'wormhole_users'", 'symmetrical': 'False', 'to': u"orm['api.Fence']"})
         },
         u'auth.group': {
             'Meta': {'object_name': 'Group'},

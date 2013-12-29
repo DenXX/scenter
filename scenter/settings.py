@@ -142,11 +142,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'rest_framework',
+    'rest_framework.authtoken',
     'registration',
     'bootstrap3',
     'south',
-    'website',
     'api',
+    'website',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -172,8 +173,8 @@ REST_FRAMEWORK = {
         'rest_framework.serializers.HyperlinkedModelSerializer',
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     )
 }
 

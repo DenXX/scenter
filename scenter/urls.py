@@ -15,6 +15,9 @@ urlpatterns = patterns('',
     # API urls
     url(r'^api/', include('api.urls')),
 
+    # Token authentication request token url
+    url(r'^api-token-auth$', 'rest_framework.authtoken.views.obtain_auth_token'),
+
     # Examples:
     # url(r'^$', 'scenter.views.home', name='home'),
     # url(r'^scenter/', include('scenter.foo.urls')),

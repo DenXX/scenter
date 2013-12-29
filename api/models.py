@@ -1,7 +1,11 @@
 
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Polygon, Point, GEOSGeometry
+from rest_framework.authtoken.models import Token
 
 from scenter import settings
 
@@ -48,6 +52,11 @@ class ScenterUser(AbstractUser):
 
     class Meta:
         ordering = ('username',)
+
+@receiver(post_save, sender=ScenterUser)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 
 class Scent(models.Model):
