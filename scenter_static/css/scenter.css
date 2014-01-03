@@ -30,16 +30,8 @@ body {
   background-color: #f5f5f5;
 }
 
-
-/* Custom page CSS
--------------------------------------------------- */
-/* Not required for template or sticky footer method. */
-
 #wrap > .container {
   padding: 50px 0px 0;
-}
-.container .credit {
-  margin: 20px 0;
 }
 
 .container{
@@ -64,14 +56,7 @@ body {
   overflow: auto;
 }
 
-.spacer15 { height: 15px; width: 100%; font-size: 0; margin: 0; padding: 0; border: 0; display: block; }
-.spacer5 { height: 5px; width: 100%; font-size: 0; margin: 0; padding: 0; border: 0; display: block; }
-
 #footer > .container {
   padding-left: 15px;
   padding-right: 15px;
-}
-
-code {
-  font-size: 80%;
 }
