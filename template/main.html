@@ -2,9 +2,13 @@
 {% load staticfiles %}
 
 {% block head_scripts %}
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-resource.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing&v=3.exp&sensor=false"></script>
     <script src="{% static 'js/scenter_maps.js' %}"></script>
+    <script src="{% static 'app/app.js' %}"></script>
+    <script src="{% static 'app/controllers.js' %}"></script>
+    <script src="{% static 'app/services.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +18,9 @@
 
 	<div id="message" class="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px">
 		<div id="messagelist" class="list-group">
-      {% include 'scent.html' %}
+      <ul class="list-group" ng-controller="ScentListCtrl">
+        {% include 'scent.html' %}
+      </ul>
     </div>
 	</div>
 

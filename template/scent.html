@@ -1,13 +1,15 @@
 {% load staticfiles %}
 
-<li class="scent list-group-item">
-<div class="row">
-<div class="col-xs-12">
-    This is sample scent. This is sample scent. This is sample scent. This is sample scent. This is sample scent. This is sample scent...
-</div>
-</div>
-<div class="row">
-	<div class="col-xs-6"><img src="{% static 'img/fence_sm.png' %}" width="15">&nbsp;<small><a href="#">Emerson Hall</a></small></div>
-	<div class="col-xs-6 text-right"><span class="glyphicon glyphicon-user"></span>&nbsp;<small><a href="#">DenXX</a></small></div>
-</div>
+<li class="scent list-group-item" ng-repeat="scent in scents">
+	<div class="row">
+	<div class="col-xs-12">
+	{% verbatim %}
+	    {{ scent.content }}
+	{% endverbatim %}
+	</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6"><img src="{% static 'img/fence_sm.png' %}" width="15">&nbsp;<small><a href="#">{% verbatim %}{{ scent.fence }}{% endverbatim %}</a></small></div>
+		<div class="col-xs-6 text-right"><small><a href="#">{% verbatim %}{{ scent.author }}{% endverbatim %}</a></small>&nbsp;<span class="glyphicon glyphicon-user"></span></div>
+	</div>
 </li>
