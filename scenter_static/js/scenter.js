@@ -1,3 +1,4 @@
+
 function deleteMessages(mid){
         $.ajax({
         // TODO: need to use url Django tag?
