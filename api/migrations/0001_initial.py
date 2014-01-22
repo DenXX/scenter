@@ -7,10 +7,6 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    needed_by = (
-        ('authtoken', '0001_initial'),
-    )
-
     def forwards(self, orm):
         # Adding model 'Fence'
         db.create_table(u'api_fence', (
