@@ -68,6 +68,7 @@ class UserUpdateSerializer(UserSerializer):
 class FenceSerializer(serializers.ModelSerializer):
     """ Serializer for Fence model """
     location = serializers.CharField(source='location')
+    # TODO: Why is this commented out?
     # due = serializers.DateTimeField(input_formats=['%m/%d/%Y %I:%M %p',])
     class Meta:
         model = Fence

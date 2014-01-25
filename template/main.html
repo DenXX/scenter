@@ -7,16 +7,17 @@
     <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing&v=3.exp&sensor=false"></script>
     <script src="{% static 'js/scenter_maps.js' %}"></script>
     <script src="{% static 'app/app.js' %}"></script>
-    <script src="{% static 'app/controllers.js' %}"></script>
     <script src="{% static 'app/services.js' %}"></script>
+    <script src="{% static 'app/controllers.js' %}"></script>
 {% endblock %}
 
 {% block content %}
+<div ng-controller="FenceCtrl" id="map_ctrl">
 	<div class="container">
 		<div id="map-canvas"></div>
 	</div>
 
-	<div id="message" class="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px">
+	<div id="message" id="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px">
 		<div id="messagelist" class="list-group">
       <ul class="list-group" ng-controller="ScentListCtrl">
         {% include 'scent.html' %}
@@ -29,14 +30,6 @@
       <p class="text-muted credit">Copyright 2013 Emory University. If you have any questions about the website, please send us an email at <a href="mailto:yu.wang@emory.edu">yu.wang@emory.edu</a>. Thanks!</p>
     </div>
   </div>
-
-
+</div>
 {% endblock %}
 
-{% block end_scripts %}
-<script language="javascript">
-  $(function() {
-    initializeMaps();
-  });
-</script>
-{% endblock %}

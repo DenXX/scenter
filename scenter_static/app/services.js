@@ -1,8 +1,8 @@
 var scenterServices = angular.module('scenterServices', ['ngResource']);
  
-scenterServices.factory('Scent', ['$resource',
+scenterServices.factory('Fences', ['$resource',
   function($resource){
-    return $resource('phones/:phoneId.json', {}, {
-      query: {method:'GET', params:{phoneId:'phones'}, isArray:true}
+    return $resource('api/fences/', {}, {
+      query: {method:'GET', params:{bbox:''}, isArray:true}
     });
   }]);
