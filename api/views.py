@@ -80,7 +80,7 @@ class ScentListView(APIView):
             filter(Q(due__gt=datetime.now()) | Q(due__isnull=True))
 
 
-    def get(self, request, fence_id):
+    def get(self, request):
         """ Returns a list of scents for a fence or for location """
         if 'fence_id' in request.QUERY_PARAMS:
             fence_id = request.QUERY_PARAMS['fence_id']
@@ -101,15 +101,16 @@ class ScentListView(APIView):
         # Otherwise raise 404
         raise Http404
 
-
-    def post(self, request, fence_id):
+    def post(self, request):
         """ Creates new scent for the given fence """
         # TODO: Check how to change value of serializer instead of this
-        serializer = ScentSerializer(data=request.DATA,
-            context={'fence': fence_id})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if 'fence_id' in request.QUERY_PARAMS:
+            fence_id = request.QUERY_PARAMS['fence_id']
+            serializer = ScentSerializer(data=request.DATA,
+                context={'fence': fence_id})
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

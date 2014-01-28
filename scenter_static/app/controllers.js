@@ -10,7 +10,7 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     };
 
     $scope.map = new google.maps.Map($('#map-canvas').get(0), mapOptions);
-    $scope.polygons = {};
+    $scope.fences = {};
     $scope.current_polygon = null;
     $scope.infoWindow = null;
 
@@ -27,7 +27,7 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     });
     drawingManager.setMap($scope.map);
 
-    $scope.getPolygonOptions = function (active) {
+    getPolygonOptions = function (active) {
         if (active)
             return {strokeColor: 'green',
                     strokeOpacity: 1.0,
@@ -42,17 +42,26 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
                      fillOpacity: 0.1};
     };
 
-    $scope.selectFence = function (fence) {
-        if ($scope.currentPolygon) {
-            $scope.currentPolygon.setOptions($scope.getPolygonOptions(false));
+    selectFence = function (fence) {
+        if ($scope.currentFence) {
+            $scope.currentFence.setOptions(getPolygonOptions(false));
         }
 
-        $scope.currentPolygon = fence;
-        $scope.currentPolygon.setOptions($scope.getPolygonOptions(true));
+        $scope.currentFence = fence;
+        $scope.currentFence.setOptions(getPolygonOptions(true));
+        $scope.$digest();
+    };
+
+    deselectCurrentFence = function() {
+        $scope.currentFence.setOptions(getPolygonOptions(false));
+        $scope.currentFence = null;
+        if ($scope.infoWindow)
+            $scope.infoWindow.close();
+        $scope.$digest();
     };
 
     // TODO: If we move map and fence goes out of scope, we should remove window.
-    $scope.showInfoWindow = function (fence, coords) {
+    showInfoWindow = function (fence, coords) {
         var contentString = '<div>' + fence.name + '</div>';
         if ($scope.infoWindow)
             $scope.infoWindow.close();
@@ -64,8 +73,8 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     };
 
     // TODO: Create service for all this functions
-    $scope.displayFence = function (fence) {
-        if (fence.id in $scope.polygons)
+    displayFence = function (fence) {
+        if (fence.id in $scope.fences)
             return;
         // Define the LatLng coordinates for the polygon's path.
         var vertices = new Array();
@@ -75,17 +84,17 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
                 fence_location.coordinates[0][i][1]));
         }
         fence_polygon = new google.maps.Polygon({paths: vertices});
-        fence_polygon.setOptions($scope.getPolygonOptions(false));
+        fence_polygon.setOptions(getPolygonOptions(false));
         fence_polygon.id = fence.id;
         fence_polygon.name = fence.name;
 
         google.maps.event.addListener(fence_polygon, 'click', function(event){
-            $scope.selectFence(this);
-            $scope.showInfoWindow(this, event.latLng);
+            selectFence(this);
+            showInfoWindow(this, event.latLng);
         });
 
         fence_polygon.setMap($scope.map);
-        $scope.polygons[fence_polygon.id] = fence_polygon;
+        $scope.fences[fence_polygon.id] = fence_polygon;
     };
 
     $scope.updateFences = function() {
@@ -93,7 +102,7 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
         var map_bbox = boundingBox.getNorthEast().lat()+','+boundingBox.getNorthEast().lng()+
             ','+boundingBox.getSouthWest().lat()+','+boundingBox.getSouthWest().lng();
         Fences.query({bbox: map_bbox}, function(fences){
-            fences.forEach($scope.displayFence);
+            fences.forEach(displayFence);
         });
     };
 
@@ -106,18 +115,18 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     google.maps.event.addListener($scope.map, 'zoom_changed', function () {
         $scope.updateFences();
     });
+    google.maps.event.addListener($scope.map, 'click', function(){
+        deselectCurrentFence();
+    });
 }]);
  
-scenterControllers.controller('ScentListCtrl', ['$scope', '$http', function ($scope) {
-  $scope.scents = [
-    {'content': 'This is sample scent text. This is sample scent text. This is sample scent text. This is sample scent text. ',
-     'fence': 'Emory University',
-     'author': "DenXX"},
-    {'content': 'I don\'t understand what you are saying. I don\'t understand what you are saying. I don\'t understand what you are saying. ',
-     'fence': 'China',
-     'author': "YuWang"},
-    {'content': 'This is sample scent text. This is sample scent text. This is sample scent text. This is sample scent text. ',
-     'fence': 'Emerson Hall',
-     'author': "DavidFink"}
-  ];
+scenterControllers.controller('ScentListCtrl', ['$scope', 'Scents', function ($scope, Scents) {
+    $scope.$watch('currentFence', function(newFence, oldFence){
+        if (newFence != null)
+            Scents.query({fence_id:newFence.id}, function(scents){
+                $scope.scents = scents;
+            });
+        else
+            $scope.scents = null;
+    });
 }]);
