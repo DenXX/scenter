@@ -116,6 +116,14 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+CORS_ALLOW_HEADERS = (
+'x-requested-with',
+'content-type',
+'accept',
+'origin',
+'authorization',
+'X-CSRFToken')
+
 ROOT_URLCONF = 'scenter.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -127,6 +135,8 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',

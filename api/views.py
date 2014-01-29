@@ -106,12 +106,15 @@ class ScentListView(APIView):
         # TODO: Check how to change value of serializer instead of this
         if 'fence_id' in request.QUERY_PARAMS:
             fence_id = request.QUERY_PARAMS['fence_id']
-            serializer = ScentSerializer(data=request.DATA,
-                context={'fence': fence_id})
+            data = request.DATA
+            data.update({'fence': fence_id, 'author':request.user.id})
+            serializer = ScentSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'errors':'Fence is not specified'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ScentView(viewsets.ModelViewSet):

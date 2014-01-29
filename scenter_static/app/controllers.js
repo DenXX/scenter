@@ -53,9 +53,11 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     };
 
     deselectCurrentFence = function() {
-        $scope.currentFence.setOptions(getPolygonOptions(false));
-        $scope.currentFence = null;
-        if ($scope.infoWindow)
+        if ($scope.currentFence != null) {
+            $scope.currentFence.setOptions(getPolygonOptions(false));
+            $scope.currentFence = null;
+        }
+        if ($scope.infoWindow != null)
             $scope.infoWindow.close();
         $scope.$digest();
     };
@@ -120,13 +122,38 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     });
 }]);
  
-scenterControllers.controller('ScentListCtrl', ['$scope', 'Scents', function ($scope, Scents) {
-    $scope.$watch('currentFence', function(newFence, oldFence){
-        if (newFence != null)
-            Scents.query({fence_id:newFence.id}, function(scents){
+scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', 'Scents', function ($scope, $http, $cookies, Scents) {
+    $scope.updateScents = function() {
+        if ($scope.currentFence != null) {
+            Scents.query({fence_id:$scope.currentFence.id}, function(scents){
                 $scope.scents = scents;
             });
-        else
+        } else {
             $scope.scents = null;
+        }
+    };
+
+    $scope.$watch('currentFence', function(newFence, oldFence){
+        $scope.updateScents();
     });
+
+    $scope.dropScent = function () {
+        if ($scope.currentFence != null) {
+            var data = {content:$scope.newScentText};
+            $http({method:'POST', url: 'api/scents/', data: data,
+                params: {fence_id:$scope.currentFence.id},
+                headers: {'X-CSRFToken':$cookies.csrftoken}}).
+              success(function(data, status, headers, config) {
+                $scope.updateScents();
+                $scope.newScentText = '';
+              }).
+              error(function(data, status, headers, config) {
+                // TODO: I guess we don't show this to the user, but email?
+                $scope.dropScentError = data.errors;
+              });
+        }
+        else {
+            alert("Sorry, but you need select a fence first.");
+        }
+    }
 }]);

@@ -4,6 +4,7 @@
 {% block head_scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-resource.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular-cookies.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing&v=3.exp&sensor=false"></script>
     <script src="{% static 'js/scenter_maps.js' %}"></script>
     <script src="{% static 'app/app.js' %}"></script>
@@ -17,9 +18,21 @@
 		<div id="map-canvas"></div>
 	</div>
 
-	<div id="message" id="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px">
+	<div id="message" id="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px" ng-controller="ScentListCtrl">
+    <div id="drop-scent-panel" class="panel panel-default" ng-show="currentFence">
+      <div class="panel-body" style="padding: 5px">
+        {% csrf_token %}
+        <textarea class="form-control" rows="3" placeholder="Leave a scent" id="new-scent-text" style="resize:none" ng-model="newScentText"></textarea>
+      </div>
+      <div class="panel-footer text-right" style="padding: 5px">
+        450 <button name="drop" class="btn btn-success" ng-click="dropScent()">Drop Scent</button>
+      </div>
+    </div>
+    <div class="alert alert-danger alert-dismissable" ng-show="dropScentError">
+      {% verbatim %}{{ dropScentError }}{% endverbatim %}
+    </div>
 		<div id="messagelist" class="list-group">
-      <ul class="list-group" ng-controller="ScentListCtrl">
+      <ul class="list-group">
         {% include 'scent.html' %}
       </ul>
     </div>

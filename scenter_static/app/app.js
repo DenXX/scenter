@@ -1,2 +1,2 @@
 
-var scenterApp = angular.module('scenterApp', ['scenterControllers', 'scenterServices']);
+var scenterApp = angular.module('scenterApp', ['ngCookies', 'scenterControllers', 'scenterServices']);
