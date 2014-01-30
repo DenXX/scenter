@@ -107,7 +107,7 @@ class ScentListView(APIView):
         if 'fence_id' in request.QUERY_PARAMS:
             fence_id = request.QUERY_PARAMS['fence_id']
             data = request.DATA
-            data.update({'fence': fence_id, 'author':request.user.id})
+            data.update({'fence': fence_id, 'author':request.user.username})
             serializer = ScentSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()

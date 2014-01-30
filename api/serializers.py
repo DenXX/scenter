@@ -77,6 +77,8 @@ class FenceSerializer(serializers.ModelSerializer):
 
 class ScentSerializer(serializers.ModelSerializer):
     """ Serializer for Scent model """
+    author = serializers.SlugRelatedField(slug_field='username')
+
     class Meta:
         model = Scent
         fields = ('id', 'author', 'content', 'created', 'due', 'fence')

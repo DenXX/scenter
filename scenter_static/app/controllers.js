@@ -156,4 +156,5 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
             alert("Sorry, but you need select a fence first.");
         }
     }
+   
 }]);
