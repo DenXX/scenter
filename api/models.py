@@ -66,7 +66,7 @@ class Scent(models.Model):
     # TODO: change this to a ForeignKey to User model
     author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='scents',
         help_text=u'Author of the message')
-    content = models.CharField(max_length=140, blank=False, help_text=u'Body '
+    content = models.CharField(max_length=450, blank=False, help_text=u'Body '
         'of the message')
     created = models.DateTimeField(auto_now_add=True, db_index=True,
         help_text=u'When the message was created')

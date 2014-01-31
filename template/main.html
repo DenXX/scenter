@@ -14,11 +14,9 @@
 
 {% block content %}
 <div ng-controller="FenceCtrl" id="map_ctrl">
-	<div class="container">
-		<div id="map-canvas"></div>
-	</div>
+	<div id="map-canvas"></div>
 
-	<div id="message" id="messagecontainer" style="position:absolute;right:5px;top:55px;width:390px;" ng-controller="ScentListCtrl">
+	<div id="scent-canvas" ng-controller="ScentListCtrl">
     <div id="drop-scent-panel" class="panel panel-default" ng-show="currentFence">
       <div class="panel-body" style="padding: 5px">
         {% csrf_token %}
@@ -31,17 +29,12 @@
     <div class="alert alert-danger alert-dismissable" ng-show="dropScentError">
       {% verbatim %}{{ dropScentError }}{% endverbatim %}
     </div>
-		<div id="messagelist" class="list-group">
+
+		<div id="scent-list" class="list-group">
       <ul class="list-group">
         {% include 'scent.html' %}
       </ul>
     </div>
 	</div>
-
-  <div id="footer">
-    <div class="container" style="background-color:#004F00">
-      <p class="text-muted credit">Copyright 2013 Emory University. If you have any questions about the website, please send us an email at <a href="mailto:yu.wang@emory.edu">yu.wang@emory.edu</a>. Thanks!</p>
-    </div>
-  </div>
 </div>
 {% endblock %}

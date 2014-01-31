@@ -2,11 +2,11 @@
 
 <li class="scent list-group-item" ng-repeat="scent in scents">
 	<div class="row">
-	<div class="col-xs-12">
-	{% verbatim %}
-	    {{ scent.content }}
-	{% endverbatim %}
-	</div>
+		<div class="col-xs-12">
+			{% verbatim %}
+			    {{ scent.content }}
+			{% endverbatim %}
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-6"><img src="{% static 'img/fence_sm.png' %}" width="15">&nbsp;<small><a href="#">{% verbatim %}{{ scent.fence }}{% endverbatim %}</a></small></div>
