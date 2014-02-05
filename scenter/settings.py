@@ -130,7 +130,7 @@ ROOT_URLCONF = 'scenter.urls'
 WSGI_APPLICATION = 'scenter.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '/Users/denis/Projects/scenter/template',
+    PROJECT_ROOT + '/template',
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
