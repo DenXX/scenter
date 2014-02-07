@@ -95,7 +95,7 @@ class ScentListView(APIView):
             fences = FencesFilter.filter_by_location(fences, location)
             scents_queryset = Scent.objects.filter(fence__in=fences)
             scents_queryset = self.filter_inactive(scents_queryset)
-            scents_queryset = scents.extra(order_by=['-created'])
+            scents_queryset = scents_queryset.extra(order_by=['-created'])
             serializer = ScentSerializer(scents_queryset, many=True)
             return Response(serializer.data)
         # Otherwise raise 404
