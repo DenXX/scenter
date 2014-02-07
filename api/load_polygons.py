@@ -23,14 +23,14 @@ def get_geo_django_polygon(coordinates):
     for index, point in enumerate(coordinates):
         if index > 0:
             res += ','
-        res += str(point[0]) + ' ' + str(point[1])
+        res += str(point[1]) + ' ' + str(point[0])
     return res + '))'
 
 def main(input_filename):
     with open(input_filename, 'r') as input:
         for counter, line in enumerate(input):
             building = json.loads(line, encoding='utf8')
-            if len(building['name']) > 0:
+            if len(building['name']) > 0 and int(building['shapeType']) == 5:
                 polygon = get_geo_django_polygon(building['points'])
                 id = building['name'].replace(' ','_').lower()
                 if Fence.objects.filter(id=id).exists():

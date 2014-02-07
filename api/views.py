@@ -48,6 +48,7 @@ class FenceListView(APIView):
             fences_queryset = FencesFilter.filter_by_location(fences_queryset,
                 self.request.QUERY_PARAMS['loc'])
         # Create serializer for the list of fences
+        fences_queryset = fences_queryset.area(field_name='_location').extra(order_by=['-area'])
         serializer = FenceSerializer(fences_queryset, many=True)
         return Response(serializer.data)
 
