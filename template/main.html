@@ -16,20 +16,24 @@
 <div ng-controller="FenceCtrl" id="map_ctrl">
 	<div id="map-canvas"></div>
 
-	<div id="scent-canvas" ng-controller="ScentListCtrl">
-    <div id="drop-scent-panel" class="panel panel-default" ng-show="currentFence">
-      <div class="panel-body" style="padding: 5px">
-        {% csrf_token %}
-        <textarea class="form-control" rows="3" placeholder="Leave a scent" id="new-scent-text" style="resize:none" ng-model="newScentText"></textarea>
+	<div id="scent-canvas" class="shadow" ng-controller="ScentListCtrl">
+    <div class="alert alert-success rightPanelAlert" ng-hide="currentFence">Please select a fence to see the scents inside it</div>
+    {% if request.user.is_authenticated %}
+      <div id="drop-scent-panel" class="panel panel-default" ng-show="currentFence">
+        <div class="panel-body" style="padding: 5px">
+          {% csrf_token %}
+          <textarea class="form-control" rows="3" placeholder="Leave a scent" id="new-scent-text" style="resize:none" ng-model="newScentText"></textarea>
+        </div>
+        <div class="panel-footer text-right" style="padding: 5px">
+          450 <button name="drop" class="btn btn-success" ng-click="dropScent()">Drop Scent</button>
+        </div>
       </div>
-      <div class="panel-footer text-right" style="padding: 5px">
-        450 <button name="drop" class="btn btn-success" ng-click="dropScent()">Drop Scent</button>
+      <div class="alert alert-danger alert-dismissable" ng-show="dropScentError">
+        {% verbatim %}{{ dropScentError }}{% endverbatim %}
       </div>
-    </div>
-    <div class="alert alert-danger alert-dismissable" ng-show="dropScentError">
-      {% verbatim %}{{ dropScentError }}{% endverbatim %}
-    </div>
-
+    {% else %}
+      <div class="alert alert-success rightPanelAlert" ng-show="currentFence" class="rightPanelAlert">Please <a href="{% url 'auth_login' %}">sign in</a> or <a href="{% url 'registration_register' %}">sign up</a> to drop a new scent.</div>
+    {% endif %}
 		<div id="scent-list" class="list-group">
       <ul class="list-group">
         {% include 'scent.html' %}

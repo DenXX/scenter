@@ -25,10 +25,13 @@ body {
   width: 400px;
   padding: 10px;
   margin: 0px;
-  -moz-box-shadow: 0 0 5px #aaa;
-  -webkit-box-shadow: 0 0 5px #aaa;
-  box-shadow: 0 0 5px #aaa;
   overflow: auto;
+}
+
+.shadow {
+  -moz-box-shadow: 0 0 10px #555;
+  -webkit-box-shadow: 0 0 10px #555;
+  box-shadow: 0 0 10px #555;
 }
 
 #drop-scent-panel {
@@ -45,4 +48,10 @@ body {
   bottom: 0px;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.rightPanelAlert {
+  height: 131px;
+  line-height: 95px;
+  text-align: center;
 }
