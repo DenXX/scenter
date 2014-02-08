@@ -37,6 +37,7 @@
 		<div id="scent-list" class="list-group">
       <ul class="list-group">
         {% include 'scent.html' %}
+        <li class="list-group-item" ng-hide="!currentFence || scents.length">Currently there are no scents in this fence. You can be the first!</li>
       </ul>
     </div>
 	</div>
