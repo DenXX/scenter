@@ -99,8 +99,23 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
         $scope.fences[fence_polygon.id] = fence_polygon;
     };
 
+    hideInvisibleFences = function (boundingBox) {
+        for (var id in $scope.fences) {
+            path = $scope.fences[id].getPath();
+            for (var i = 0; i < path.getLength(); ++i) {
+                if (!boundingBox.contains(path.getAt(i))) {
+                    $scope.fences[id].setMap(null);
+                    delete $scope.fences[id];
+                    break;
+                }
+            }
+        }
+    }
+
+
     $scope.updateFences = function() {
         var boundingBox = $scope.map.getBounds();
+        hideInvisibleFences(boundingBox);
         var map_bbox = boundingBox.getNorthEast().lat()+','+boundingBox.getNorthEast().lng()+
             ','+boundingBox.getSouthWest().lat()+','+boundingBox.getSouthWest().lng();
         Fences.query({bbox: map_bbox}, function(fences){
