@@ -107,7 +107,8 @@ class ScentListView(APIView):
         # TODO: Check how to change value of serializer instead of this
         if 'fence_id' in request.QUERY_PARAMS:
             fence_id = request.QUERY_PARAMS['fence_id']
-            data = request.DATA
+            # TODO: figure out why json gives mutable dict and form immutable
+            data = request.DATA.copy()
             data.update({'fence': fence_id, 'author':request.user.username})
             serializer = ScentSerializer(data=data)
             if serializer.is_valid():
