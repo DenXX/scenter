@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.gis.geos import Polygon, Point
+from django.contrib.gis.measure import Distance
 from django.db.models import Q
 
 from api.models import Fence, Scent
@@ -34,15 +35,14 @@ class FencesFilter:
         return fences_queryset.filter(_location__within=bbox)
 
     @staticmethod
-    def filter_by_location(fences_queryset, loc):
+    def filter_by_location(fences_queryset, loc, max_distance_meters=30):
         """ Filter fences query set by location """
         loc = loc.split(',')
         # Check if we have 4 coordinates (top-left + botton-right)
         if len(loc) != 2:
             raise Http404
         loc = Point(map(float, loc))
-        # Do GIS bounding box overlaps filter
-        return fences_queryset.filter(_location__contains=loc)
+        return fences_queryset.filter(_location__distance_lt=(loc, Distance(m=max_distance_meters)))
 
 
 if __name__ == "__main__":
