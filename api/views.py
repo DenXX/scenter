@@ -97,6 +97,9 @@ class ScentListView(APIView):
         if 'loc' in request.QUERY_PARAMS:
             location = request.QUERY_PARAMS['loc']
             fences = Fence.objects.all()
+            accuracy = settings.DEFAULT_LOCATION_MATCH_ACCURACY
+            if 'accuracy' in self.request.QUERY_PARAMS:
+                accuracy = float(self.request.QUERY_PARAMS['accuracy'])
             fences = FencesFilter.filter_by_location(fences, location)
             scents_queryset = Scent.objects.filter(fence__in=fences)
             scents_queryset = self.filter_inactive(scents_queryset)
