@@ -99,26 +99,29 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
         $scope.fences[fence_polygon.id] = fence_polygon;
     };
 
-    hideInvisibleFences = function (boundingBox) {
+    hideInvisibleFences = function (fences) {
+        // Create hashset of ids in returned set
+        ids_to_keep = {};
+        for (var i = 0; i < fences.length; ++i)
+            ids_to_keep[fences[i].id] = true;
+
+        // Delete items not in this list
         for (var id in $scope.fences) {
-            path = $scope.fences[id].getPath();
-            for (var i = 0; i < path.getLength(); ++i) {
-                if (!boundingBox.contains(path.getAt(i))) {
-                    $scope.fences[id].setMap(null);
-                    delete $scope.fences[id];
-                    break;
-                }
+            // If not in the list to keep or it is not current (if there is current)
+            if (!(id in ids_to_keep) && 
+                ($scope.currentFence == null || $scope.currentFence.id != id)) {
+                $scope.fences[id].setMap(null);
+                delete $scope.fences[id];
             }
         }
     }
 
-
     $scope.updateFences = function() {
         var boundingBox = $scope.map.getBounds();
-        hideInvisibleFences(boundingBox);
         var map_bbox = boundingBox.getNorthEast().lat()+','+boundingBox.getNorthEast().lng()+
             ','+boundingBox.getSouthWest().lat()+','+boundingBox.getSouthWest().lng();
         Fences.query({bbox: map_bbox}, function(fences){
+            hideInvisibleFences(fences);
             fences.forEach(displayFence);
         });
     };
