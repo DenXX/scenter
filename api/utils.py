@@ -35,14 +35,14 @@ class FencesFilter:
         return fences_queryset.filter(_location__within=bbox)
 
     @staticmethod
-    def filter_by_location(fences_queryset, loc, max_distance_meters=30):
+    def filter_by_location(fences_queryset, loc, accuracy):
         """ Filter fences query set by location """
         loc = loc.split(',')
         # Check if we have 4 coordinates (top-left + botton-right)
         if len(loc) != 2:
             raise Http404
         loc = Point(map(float, loc))
-        return fences_queryset.filter(_location__distance_lt=(loc, Distance(m=max_distance_meters)))
+        return fences_queryset.filter(_location__distance_lte=(loc, Distance(m=accuracy)))
 
 
 if __name__ == "__main__":

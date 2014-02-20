@@ -45,8 +45,11 @@ class FenceListView(APIView):
                 self.request.QUERY_PARAMS['bbox'])
         # Check if a point location is specified for filtering
         if 'loc' in self.request.QUERY_PARAMS:
+            accuracy = 5
+            if 'accuracy' in self.request.QUERY_PARAMS:
+                accuracy = float(self.request.QUERY_PARAMS['accuracy'])
             fences_queryset = FencesFilter.filter_by_location(fences_queryset,
-                self.request.QUERY_PARAMS['loc'])
+                self.request.QUERY_PARAMS['loc'], accuracy)
         # Create serializer for the list of fences
         fences_queryset = fences_queryset.area(field_name='_location').extra(order_by=['-area'])
         serializer = FenceSerializer(fences_queryset, many=True)
