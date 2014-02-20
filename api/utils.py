@@ -23,7 +23,7 @@ class FencesFilter:
         return fences_queryset.filter(num_scents__gt=0)
 
     @staticmethod
-    def filter_by_bbox(fences_queryset, bbox):
+    def filter_by_bbox(fences_queryset, bbox, area_ratio_filter=0):
         """ Filter fences query set by bounding box """
         bbox = bbox.split(',')
         # Check if we have 4 coordinates (top-left + botton-right)
@@ -31,8 +31,9 @@ class FencesFilter:
             raise Http404
         bbox = Polygon.from_bbox(map(float, bbox))
         # Do GIS within filter
-        # TODO: for some reason overlaps filter doesn't work, but fits better
-        return fences_queryset.filter(_location__within=bbox)
+        # TODO: How to do filtering by area without extra()?
+        return fences_queryset.filter(_location__within=bbox).extra(
+            where=['ST_Area("api_fence"."_location") >= %s'], params=[area_ratio_filter*bbox.area])
 
     @staticmethod
     def filter_by_location(fences_queryset, loc, accuracy):

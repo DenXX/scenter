@@ -213,3 +213,8 @@ LOGGING = {
         },
     }
 }
+
+# Allow 5 meters error in detecting fences you are in
+DEFAULT_LOCATION_MATCH_ACCURACY = 5 
+
+AREA_RATIO_FILTER_DEFAULT = 0.0001

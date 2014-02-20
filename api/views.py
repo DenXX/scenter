@@ -17,6 +17,7 @@ from api.models import *
 from api.serializers import *
 from api.utils import FencesFilter
 
+import scenter.settings
 
 class UserView(viewsets.ModelViewSet):
     """ View for the User model """
@@ -36,22 +37,22 @@ class FenceListView(APIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get(self, request):
-        fences_queryset = FencesFilter.filter_inactive(Fence.objects.all())
+        fences_queryset = FencesFilter.filter_inactive(Fence.objects.all()).area(field_name='_location')
         if 'ne' in self.request.QUERY_PARAMS:
             fences_queryset = FencesFilter.filter_no_scents(fences_queryset)
         # Check if bounding box is specified for filtering
         if 'bbox' in self.request.QUERY_PARAMS:
             fences_queryset = FencesFilter.filter_by_bbox(fences_queryset,
-                self.request.QUERY_PARAMS['bbox'])
+                self.request.QUERY_PARAMS['bbox'], settings.AREA_RATIO_FILTER_DEFAULT)
         # Check if a point location is specified for filtering
         if 'loc' in self.request.QUERY_PARAMS:
-            accuracy = 5
+            accuracy = settings.DEFAULT_LOCATION_MATCH_ACCURACY
             if 'accuracy' in self.request.QUERY_PARAMS:
                 accuracy = float(self.request.QUERY_PARAMS['accuracy'])
             fences_queryset = FencesFilter.filter_by_location(fences_queryset,
                 self.request.QUERY_PARAMS['loc'], accuracy)
         # Create serializer for the list of fences
-        fences_queryset = fences_queryset.area(field_name='_location').extra(order_by=['-area'])
+        fences_queryset = fences_queryset.extra(order_by=['-area'])
         serializer = FenceSerializer(fences_queryset, many=True)
         return Response(serializer.data)
 
