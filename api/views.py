@@ -100,7 +100,7 @@ class ScentListView(APIView):
             accuracy = settings.DEFAULT_LOCATION_MATCH_ACCURACY
             if 'accuracy' in self.request.QUERY_PARAMS:
                 accuracy = float(self.request.QUERY_PARAMS['accuracy'])
-            fences = FencesFilter.filter_by_location(fences, location)
+            fences = FencesFilter.filter_by_location(fences, location, accuracy)
             scents_queryset = Scent.objects.filter(fence__in=fences)
             scents_queryset = self.filter_inactive(scents_queryset)
             scents_queryset = scents_queryset.extra(order_by=['-created'])
