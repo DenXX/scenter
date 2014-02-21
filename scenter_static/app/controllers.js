@@ -140,7 +140,9 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     });
 }]);
  
-scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', 'Scents', function ($scope, $http, $cookies, Scents) {
+scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '$interval', 'Scents',
+    function ($scope, $http, $cookies, $interval, Scents) {
+
     $scope.updateScents = function() {
         if ($scope.currentFence != null) {
             Scents.query({fence_id:$scope.currentFence.id}, function(scents){
@@ -151,8 +153,19 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
         }
     };
 
+    $scope.updateScentsTimer = null;
+
     $scope.$watch('currentFence', function(newFence, oldFence){
         $scope.updateScents();
+        if (newFence == null) {
+            if ($scope.updateScentsTimer != null) {
+                $interval.cancel($scope.updateScentsTimer);
+                $scope.updateScentsTimer = null;
+            }
+        }
+        else if ($scope.updateScentsTimer == null) {
+            $scope.updateScentsTimer = $interval($scope.updateScents, 5000);
+        }
     });
 
     $scope.dropScent = function () {
@@ -174,5 +187,5 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
             alert("Sorry, but you need select a fence first.");
         }
     }
-   
+
 }]);
