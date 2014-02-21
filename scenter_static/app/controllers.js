@@ -143,20 +143,37 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
 scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '$interval', 'Scents',
     function ($scope, $http, $cookies, $interval, Scents) {
 
-    $scope.updateScents = function() {
+    $scope.scents = null;
+    $scope.newScents = null;
+    $scope.updateScentsTimer = null;
+
+    $scope.updateScents = function(firstScentId, lastScentId) {
         if ($scope.currentFence != null) {
-            Scents.query({fence_id:$scope.currentFence.id}, function(scents){
-                $scope.scents = scents;
-            });
+            if (firstScentId != -1) {
+                Scents.query({fence_id:$scope.currentFence.id,
+                              first_scent_id:firstScentId}, function(scents){
+                    $scope.newScents = scents;
+                });
+            } else if (lastScentId != -1) {
+                Scents.query({fence_id:$scope.currentFence.id,
+                              last_scent_id:lastScentId}, function(scents){
+                    $scope.scents = $scope.scents.concat(scents);
+                });
+            }
+            else {
+                $scope.newScents = null;
+                Scents.query({fence_id:$scope.currentFence.id}, function(scents){
+                    $scope.scents = scents;
+                });
+            }
         } else {
             $scope.scents = null;
+            $scope.newScents = null;
         }
     };
 
-    $scope.updateScentsTimer = null;
-
     $scope.$watch('currentFence', function(newFence, oldFence){
-        $scope.updateScents();
+        $scope.updateScents(firstScentId=-1, lastScentId=-1);
         if (newFence == null) {
             if ($scope.updateScentsTimer != null) {
                 $interval.cancel($scope.updateScentsTimer);
@@ -164,7 +181,9 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
             }
         }
         else if ($scope.updateScentsTimer == null) {
-            $scope.updateScentsTimer = $interval($scope.updateScents, 5000);
+            $scope.updateScentsTimer = $interval(function() {
+                $scope.updateScents(firstScentId=($scope.scents.length > 0 ? $scope.scents[0].id : -1),
+                    lastScentId=-1);}, 5000);
         }
     });
 
@@ -186,6 +205,16 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
         else {
             alert("Sorry, but you need select a fence first.");
         }
+    }
+
+    $scope.getMoreScents = function () {
+        $scope.updateScents(firstScentId=-1,
+            lastScentId=($scope.scents.length > 0 ? $scope.scents[$scope.scents.length - 1].id : -1));
+    }
+
+    $scope.showNewScents = function() {
+        $scope.scents = $scope.newScents.concat($scope.scents);
+        $scope.newScents = null;
     }
 
 }]);

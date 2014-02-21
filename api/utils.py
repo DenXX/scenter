@@ -45,6 +45,19 @@ class FencesFilter:
         loc = Point(map(float, loc))
         return fences_queryset.filter(_location__distance_lte=(loc, Distance(m=accuracy)))
 
+class ScentsFilter:
+    """ This class contains static methods for filtering scents """
+
+    @staticmethod
+    def paginate(queryset, limit, first_scent_id=-1, last_scent_id=-1):
+        if first_scent_id != -1:
+            # Get a page of scents starting from last_id scent
+            return queryset.order_by('-created').filter(id__gt=first_scent_id)[:limit]
+        elif last_scent_id != -1:
+            # Get a page of scents starting from last_id scent
+            return queryset.order_by('-created').filter(id__lt=last_scent_id)[:limit]
+        else:
+            return queryset.order_by('-created')[:limit]
 
 if __name__ == "__main__":
 	print "Scenter API utility module"

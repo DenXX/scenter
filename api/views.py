@@ -15,7 +15,7 @@ from django.contrib.gis.geos import Polygon, Point
 
 from api.models import *
 from api.serializers import *
-from api.utils import FencesFilter
+from api.utils import FencesFilter, ScentsFilter
 
 import scenter.settings
 
@@ -91,6 +91,14 @@ class ScentListView(APIView):
             fence_id = request.QUERY_PARAMS['fence_id']
             scents_queryset = Scent.objects.filter(fence__id=fence_id)
             scents_queryset = self.filter_inactive(scents_queryset)
+            first_scent_id = -1
+            last_scent_id = -1
+            if 'last_scent_id' in request.QUERY_PARAMS:
+                last_scent_id = int(request.QUERY_PARAMS['last_scent_id'])
+            if 'first_scent_id' in request.QUERY_PARAMS:
+                first_scent_id = int(request.QUERY_PARAMS['first_scent_id'])
+            scents_queryset = ScentsFilter.paginate(scents_queryset, settings.SCENTS_PAGE_SIZE,
+                last_scent_id=last_scent_id, first_scent_id=first_scent_id)
             serializer = ScentSerializer(scents_queryset)
             return Response(serializer.data)
 
@@ -103,7 +111,7 @@ class ScentListView(APIView):
             fences = FencesFilter.filter_by_location(fences, location, accuracy)
             scents_queryset = Scent.objects.filter(fence__in=fences)
             scents_queryset = self.filter_inactive(scents_queryset)
-            scents_queryset = scents_queryset.extra(order_by=['-created'])
+            scents_queryset = ScentsFilter.paginate(scents_queryset, settings.SCENTS_PAGE_SIZE)
             serializer = ScentSerializer(scents_queryset, many=True)
             return Response(serializer.data)
         # Otherwise raise 404
