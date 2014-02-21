@@ -146,6 +146,7 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
     $scope.scents = null;
     $scope.newScents = null;
     $scope.updateScentsTimer = null;
+    $scope.hasMoreScents = true;
 
     $scope.updateScents = function(firstScentId, lastScentId) {
         if ($scope.currentFence != null) {
@@ -157,7 +158,10 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
             } else if (lastScentId != -1) {
                 Scents.query({fence_id:$scope.currentFence.id,
                               last_scent_id:lastScentId}, function(scents){
-                    $scope.scents = $scope.scents.concat(scents);
+                    if (scents.length > 0)
+                        $scope.scents = $scope.scents.concat(scents);
+                    else
+                        $scope.hasMoreScents = false;
                 });
             }
             else {
@@ -173,6 +177,7 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
     };
 
     $scope.$watch('currentFence', function(newFence, oldFence){
+        $scope.hasMoreScents = true;
         $scope.updateScents(firstScentId=-1, lastScentId=-1);
         if (newFence == null) {
             if ($scope.updateScentsTimer != null) {

@@ -7,6 +7,15 @@ body {
   /* The html and body elements cannot have any padding or margin. */
 }
 
+.navbar .nav > li > a {
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    color:  #fff;
+}
+
+.navbar .nav > li.active a {
+    background-color: #128A48;
+}
+
 #map-canvas {
   position: absolute;
   top: 50px;
@@ -48,14 +57,25 @@ body {
   bottom: 0px;
   right: 0px;
   padding-right: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
+}
+
+.scent {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-size: 13px;
 }
 
 .rightPanelAlert {
   height: 131px;
   line-height: 95px;
   text-align: center;
+}
+
+.scent-bottom small {
+  line-height: 20px;
+  vertical-align:middle;
 }
 
 .nopadding {

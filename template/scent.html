@@ -8,9 +8,9 @@
 			{% endverbatim %}
 		</div>
 	</div>
-	<div class="row bg-info">
+	<div class="row scent-bottom">
 		<div class="col-xs-2" style="padding-right: 2px"><small class="text-muted">1m ago</small></div>
-		<div class="col-xs-5" style="padding: 0px"><img src="{% static 'img/fence_sm.png' %}" width="15">&nbsp;<small><a href="#">{% verbatim %}{{ scent.fence }}{% endverbatim %}</a></small></div>
-		<div class="col-xs-5 text-right" style="padding-left: 2px"><small><a href="#">{% verbatim %}{{ scent.author }}{% endverbatim %}</a></small>&nbsp;<span class="glyphicon glyphicon-user"></span></div>
+		<div class="col-xs-5" style="padding: 0px"><img src="{% static 'img/fence_sm.png' %}" height="15" />&nbsp;<small><a href="#">{% verbatim %}{{ scent.fence }}{% endverbatim %}</a></small></div>
+		<div class="col-xs-5 text-right" style="padding-left: 2px"><small><a href="#">{% verbatim %}{{ scent.author }}{% endverbatim %}</a></small>&nbsp;<img src="{% static 'img/userpic_xs.png' %}" /> {# <span class="glyphicon glyphicon-user"></span> #}</div>
 	</div>
 </li>

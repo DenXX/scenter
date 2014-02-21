@@ -36,10 +36,10 @@
     {% endif %}
 		<div id="scent-list" class="list-group">
       <ul class="list-group">
-        <li class="list-group-item" ng-show="newScents"><button class="btn btn-xs btn-block" ng-click="showNewScents()" data-loading-text="Loading...">Show new scents</button></li>
+        <li class="list-group-item" ng-show="newScents"><button class="btn btn-default btn-xs btn-block" ng-click="showNewScents()" data-loading-text="Loading...">Show new scents</button></li>
         {% include 'scent.html' %}
         <li class="list-group-item" ng-hide="!currentFence || scents.length">Currently there are no scents in this fence. You can be the first!</li>
-        <li class="list-group-item" ng-show="currentFence && scents.length"><button class="btn btn-xs btn-block" ng-click="getMoreScents()" data-loading-text="Loading...">Show more</button></li>
+        <li class="list-group-item" ng-show="currentFence && scents.length && hasMoreScents"><button class="btn btn-default btn-xs btn-block" ng-click="getMoreScents()" data-loading-text="Loading...">Show more</button></li>
       </ul>
     </div>
 	</div>

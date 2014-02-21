@@ -13,7 +13,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     #url(r'^admin/', include(admin.site.urls)),
     #url(r'^scenter/$', 'website.views.home'),
-    url(r'^$', TemplateView.as_view(template_name="main.html")),
+    url(r'^$', TemplateView.as_view(template_name="main.html"), name='main'),
     url(r'^about$', TemplateView.as_view(template_name="about.html"),
         name='about'),
     url(r'^admin/', include(admin.site.urls)),
