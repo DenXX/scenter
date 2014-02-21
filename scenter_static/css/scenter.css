@@ -44,8 +44,10 @@ body {
 #scent-list {
   position: absolute;
   top: 150px;
-  width: 380px;
+  width: 390px;
   bottom: 0px;
+  right: 0px;
+  padding-right: 10px;
   overflow-y: scroll;
   overflow-x: hidden;
 }
