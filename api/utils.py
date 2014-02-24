@@ -50,9 +50,10 @@ class ScentsFilter:
 
     @staticmethod
     def paginate(queryset, limit, first_scent_id=-1, last_scent_id=-1):
+        print first_scent_id, last_scent_id
         if first_scent_id != -1:
             # Get a page of scents starting from last_id scent
-            return queryset.order_by('-created').filter(id__gt=first_scent_id)[:limit]
+            return queryset.order_by('-created').filter(id__gt=first_scent_id)
         elif last_scent_id != -1:
             # Get a page of scents starting from last_id scent
             return queryset.order_by('-created').filter(id__lt=last_scent_id)[:limit]

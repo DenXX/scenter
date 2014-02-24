@@ -30,12 +30,9 @@ def main(input_filename):
     with open(input_filename, 'r') as input:
         for counter, line in enumerate(input):
             building = json.loads(line, encoding='utf8')
-            if len(building['name']) > 0 and int(building['shapeType']) == 5:
+            if int(building['shapeType']) == 5:
                 polygon = get_geo_django_polygon(building['points'])
-                id = building['name'].replace(' ','_').lower()
-                if Fence.objects.filter(id=id).exists():
-                    id += ''.join(choice(string.ascii_uppercase + string.digits) for x in range(10))
-                Fence.objects.create(id=id, name=building['name'], location=polygon)
+                Fence.objects.create(name=building['name'], location=polygon)
             print counter
 
 if __name__ == '__main__':

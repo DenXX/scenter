@@ -15,8 +15,6 @@ class Fence(models.Model):
     # We are using GeoDjango, so need to replace manager
     objects = models.GeoManager()
 
-    id = models.CharField(max_length=128, primary_key=True,
-        help_text=u'ID of the current Fence')
     name = models.CharField(max_length=128, blank=False, help_text=u'The name '
         'of the fence')
     created = models.DateTimeField(auto_now_add=True, help_text=u'When the '

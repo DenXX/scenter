@@ -199,7 +199,8 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
                 params: {fence_id:$scope.currentFence.id},
                 headers: {'X-CSRFToken':$cookies.csrftoken}}).
               success(function(data, status, headers, config) {
-                $scope.updateScents();
+                $scope.updateScents(firstScentId=($scope.scents.length > 0 ? $scope.scents[0].id : -1),
+                    lastScentId=-1);
                 $scope.newScentText = '';
               }).
               error(function(data, status, headers, config) {
