@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name="main.html"), name='main'),
     url(r'^about$', TemplateView.as_view(template_name="about.html"),
         name='about'),
+    url(r'^tutorial$', TemplateView.as_view(template_name="tutorial.html"), name='tutorial'),
     url(r'^admin/', include(admin.site.urls)),
 
     # Authentication urls
