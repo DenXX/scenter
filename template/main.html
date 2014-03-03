@@ -43,5 +43,32 @@
       </ul>
     </div>
 	</div>
+
+  {% if request.user.is_staff %}
+    <!-- Save Fence Modal Dialog -->
+    <div class="modal fade" id="saveFenceDialog" tabindex="-1" role="dialog" aria-labelledby="saveFenceModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="saveFenceModalLabel">Create Fence</h4>
+          </div>
+          <form role="form" id="createFenceForm">
+            <div class="modal-body">
+                <div class="form-group">
+                  <label for="fenceName">Fence name</label>
+                  <input type="text" class="form-control" id="fenceName" name="name" placeholder="Name" ng-model="newPolygonName">
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" id="cancel" data-dismiss="modal" ng-click="resetSaveFence()">Cancel</button>
+              <button type="button" id="saveFence" class="btn btn-primary" ng-click="saveFence()">Save Fence</button>
+            </div>
+          </form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+  {% endif %}
 </div>
+
 {% endblock %}

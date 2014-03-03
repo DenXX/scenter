@@ -1,7 +1,7 @@
 
 var scenterControllers = angular.module('scenterControllers', []);
 
-scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope, Fences) {
+scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fences', function ($scope, $http, $cookies, Fences) {
     var mapOptions = {
         zoom: 15,
         center: new google.maps.LatLng(33.7920235, -84.325642),
@@ -13,6 +13,9 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
     $scope.fences = {};
     $scope.current_polygon = null;
     $scope.infoWindow = null;
+    // Info about polygon just created
+    $scope.newPolygonName = null;
+    $scope.createdPolygon = null
 
     var drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: null,
@@ -26,6 +29,8 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
         },
     });
     drawingManager.setMap($scope.map);
+
+
 
     getPolygonOptions = function (active) {
         if (active)
@@ -73,6 +78,15 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
         });
         $scope.infoWindow.open($scope.map);
     };
+
+    convertPolygonForApi = function (polygon_coords) {
+        // Add start point to the polygon to close it
+        polygon_coords.push(polygon_coords[0]);
+        res = '{ \"type\": \"Polygon\", \"coordinates\": [ [';
+        res += polygon_coords;
+        res = res + '] ] }';
+        return res.replace(/\(/g,'[').replace(/\)/g,']')
+    }
 
     // TODO: Create service for all this functions
     displayFence = function (fence) {
@@ -125,6 +139,41 @@ scenterControllers.controller('FenceCtrl', ['$scope', 'Fences', function ($scope
             fences.forEach(displayFence);
         });
     };
+
+    $scope.resetSaveFence = function() {
+        $scope.createdPolygon.setMap(null);
+        $scope.newPolygonName = null;
+        $scope.createdPolygon = null;
+        $('#saveFenceDialog').modal('toggle');
+    }
+
+    $scope.saveFence = function() {
+        var data = {location:convertPolygonForApi($scope.createdPolygon.getPath().getArray()),
+            name:$scope.newPolygonName};
+        $http({method:'POST', url: 'api/fences/', data: data,
+            headers: {'X-CSRFToken':$cookies.csrftoken}}).
+          success(function(data, status, headers, config) {
+            $scope.updateFences();
+          }).
+          error(function(data, status, headers, config) {
+            // TODO: I guess we don't show this to the user, but email?
+            alert(data.errors);
+          });
+
+        $scope.resetSaveFence();
+    }
+
+    // TODO: How to skip this in not admin view?
+    google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+        // Set event handler for click
+        google.maps.event.addListener(polygon, 'click', function(event){
+            // selectFence(this);
+            // showInfoWindow(this, event.latLng);
+        });
+
+        $scope.createdPolygon = polygon;
+        $('#saveFenceDialog').modal('toggle');
+    });
 
     google.maps.event.addListenerOnce($scope.map, 'tilesloaded', function () {
         $scope.updateFences();
