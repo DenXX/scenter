@@ -21,33 +21,32 @@
   </head>
 
   <body>
-    <div class="intro-header"  style="background-color: #18BC62">
+    <div class="intro-header active page" style="background-color: #18BC62">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="intro-message">
+            <div class="row" style="height: 40%">
+                <div class="col-lg-12" style="height: 100%">
+                    <div class="intro-message" style="height: 100%">
                     	<object type="image/svg+xml" data="{% static 'img/logo.svg' %}">Your browser does not support SVG</object><br />
                         <h1>Scenter</h1>
                         <h3>What's hapenning around you</h3>
                     </div>
                 </div>
             </div>
-	        <div class="bottom">
-	            <img src="{% static 'img/top_phone.png' %}" />
+	        <div class="bottom" style="height: 60%">
+	            <img src="{% static 'img/top_phone.png' %}" height="100%" />
 	        </div>
         </div>
         <!-- /.container -->
     </div>
     <!-- /.intro-header -->
-    <div class="intro-header">
-
+    <div class="intro-header page">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="intro-message">
+            <div class="row" style="height: 100%">
+                <div class="col-lg-12" style="height: 100%">
+                    <div class="intro-message" style="height: 80%">
                     	<h4 style="color: #18BC62">Hyperlocal blah-blah-blah</h4>
                     	<br /><br />
-                        <object type="image/svg+xml" data="{% static 'img/town.svg' %}">Your browser does not support SVG</object>
+                        <object type="image/svg+xml" data="{% static 'img/town.svg' %}" height="100%">Your browser does not support SVG</object>
                     </div>
                 </div>
             </div>
@@ -58,13 +57,13 @@
     <!-- /.intro-header -->
 
     <!-- /.intro-header -->
-    <div class="intro-header-top">
+    <div class="intro-header-top page">
         <div class="container">
-            <div class="row" style="width: 100%">
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="intro-message">
 	                	<h4 style="color: #18BC62">Layers of cool stuff</h4><br />
-    	            	<img src="{% static 'img/bottom_phone.png' %}" width="400" />
+    	            	<img src="{% static 'img/bottom_phone.png' %}" height="250" />
     	            </div>
                 </div>
             </div>
@@ -77,34 +76,63 @@
                 <div class="col-lg-12">
                     <div class="intro-message">
                         <h4>Something else comes here</h4>
+                    	<object type="image/svg+xml" data="{% static 'img/analytics.svg' %}" height="100%">Your browser does not support SVG</object>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- /.container -->
-	    <footer>
-	        <div class="container">
-	            <div class="row">
-	                <div class="col-lg-12">
-	                    <ul class="list-inline">
-	                        <li><a href="#home">Home</a>
-	                        </li>
-	                        <li class="footer-menu-divider">&sdot;</li>
-	                        <li><a href="#about">About</a>
-	                        </li>
-	                        <li class="footer-menu-divider">&sdot;</li>
-	                        <li><a href="#services">Services</a>
-	                        </li>
-	                        <li class="footer-menu-divider">&sdot;</li>
-	                        <li><a href="#contact">Contact</a>
-	                        </li>
-	                    </ul>
-	                    <p class="copyright text-muted small">Copyright &copy; Scenter 2014. All Rights Reserved</p>
-	                </div>
-	            </div>
-	        </div>
-	    </footer>
     </div>
+    <!-- /.container -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- <ul class="list-inline">
+                        <li><a href="#home">Home</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li><a href="#about">About</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li><a href="#services">Services</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li><a href="#contact">Contact</a>
+                        </li>
+                    </ul> -->
+                    <p class="copyright text-muted small">Copyright &copy; Scenter 2014. All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
     <!-- /.intro-header -->
+
+ <script type="text/javascript">
+$(function(){
+	$(window).keydown(function(e) {
+		if (e.keyCode != 40 && e.keyCode != 38) return;
+
+	    e.preventDefault(); //prevent default arrow key behavior
+	    var targetElement;
+	    //down
+	    if (e.keyCode == 40) {
+	        $targetElement = $('.active').closest('.page');
+	    }
+	    //up
+	    else if (e.keyCode == 38) {
+	        $targetElement = $('.active').prev('.page');
+	    }
+
+	    if (!$targetElement.length) {
+	    	return;
+	    }
+	    $('.active').removeClass('active');
+	    $targetElement.addClass('active');
+	    
+	    //scroll element into view    
+	    $('html, body').clearQueue().animate({scrollTop: $targetElement.offset().top }, 1000);
+	});
+});
+</script>
 </body>
 </html>
