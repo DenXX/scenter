@@ -23,16 +23,28 @@ class UserUpdateSerializer(UserSerializer):
 
     def validate(self, attrs):
         """ Validates that password and password_confirm are the same """
+
         if 'password' in attrs:
             if 'password_confirm' not in attrs:
                 raise serializers.ValidationError("password_confirm field is required")
             if attrs['password'] != attrs['password_confirm']:
                 raise serializers.ValidationError("Passwords don't match")
+
+        # Check uniqueness of username and password
+        if getattr(self, 'object', None) == None: # Check if this is PUT or POST
+            if ScenterUser.objects.filter(username=attrs['username']).count() > 0:
+                raise serializers.ValidationError("A user with the given name already exists.")
+            if ScenterUser.objects.filter(email=attrs['email']).count() > 0:
+                raise serializers.ValidationError("A user with the given email already exists.")
         return attrs
 
     def restore_object(self, attrs, instance):
         """ restore_objects needs special treatmeant for users """
         if instance == None:
+            # Check if such user already exists
+            # if ScenterUser.objects.filter(username=attrs['username']).count() > 0:
+            #     raise serializers.ValidationError("User with this username already exists")
+
             instance = ScenterUser.objects.create_user(username=attrs['username'],
                 password=attrs['password'])
             del attrs['password_confirm']

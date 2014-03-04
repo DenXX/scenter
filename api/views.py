@@ -7,6 +7,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
+from rest_framework import serializers
 from rest_framework import status
 
 from datetime import datetime
@@ -21,7 +22,6 @@ import scenter.settings
 
 class UserView(viewsets.ModelViewSet):
     """ View for the User model """
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     lookup_field = 'username'       # Use username instead of pk
     queryset = ScenterUser.objects.all()
@@ -31,6 +31,15 @@ class UserView(viewsets.ModelViewSet):
             return UserUpdateSerializer
         return UserSerializer
 
+
+    def check_permissions(self, request):
+        """ Check permissions, because we have difficult permissions for that """
+        if request.method == 'GET':
+            if not request.user.is_superuser:
+                self.permission_denied(request)
+        elif request.method in ('PUT', 'PATCH'):
+            if 'username' not in request.DATA or request.user.username != request.DATA['username']:
+                self.permission_denied(request)
 
 class FenceListView(APIView):
     """ List fences available in the region """
@@ -111,7 +120,6 @@ class ScentListView(APIView):
             fences = FencesFilter.filter_by_location(fences, location, accuracy)
             scents_queryset = Scent.objects.filter(fence__in=fences)
             scents_queryset = self.filter_inactive(scents_queryset)
-            scents_queryset = ScentsFilter.paginate(scents_queryset, settings.SCENTS_PAGE_SIZE)
             serializer = ScentSerializer(scents_queryset, many=True)
             return Response(serializer.data)
         # Otherwise raise 404

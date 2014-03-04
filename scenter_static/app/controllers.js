@@ -150,6 +150,7 @@ scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fenc
     $scope.saveFence = function() {
         var data = {location:convertPolygonForApi($scope.createdPolygon.getPath().getArray()),
             name:$scope.newPolygonName};
+        // TODO: do this with Angular service
         $http({method:'POST', url: 'api/fences/', data: data,
             headers: {'X-CSRFToken':$cookies.csrftoken}}).
           success(function(data, status, headers, config) {
@@ -166,11 +167,10 @@ scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fenc
     // TODO: How to skip this in not admin view?
     google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
         // Set event handler for click
-        google.maps.event.addListener(polygon, 'click', function(event){
+        // google.maps.event.addListener(polygon, 'click', function(event){
             // selectFence(this);
             // showInfoWindow(this, event.latLng);
-        });
-
+        // });
         $scope.createdPolygon = polygon;
         $('#saveFenceDialog').modal('toggle');
     });
@@ -244,6 +244,7 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
     $scope.dropScent = function () {
         if ($scope.currentFence != null) {
             var data = {content:$scope.newScentText};
+            // TODO: do this using Angular service
             $http({method:'POST', url: 'api/scents/', data: data,
                 params: {fence_id:$scope.currentFence.id},
                 headers: {'X-CSRFToken':$cookies.csrftoken}}).

@@ -13,7 +13,7 @@ body {
 }
 
 .navbar .nav > li.active a {
-    background-color: #128A48;
+    background-color: #18BC62; /*#128A48;*/
 }
 
 #map-canvas {

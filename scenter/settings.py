@@ -215,9 +215,9 @@ LOGGING = {
 }
 
 # Allow 5 meters error in detecting fences you are in
-DEFAULT_LOCATION_MATCH_ACCURACY = 5 
+DEFAULT_LOCATION_MATCH_ACCURACY = 5
 # Minimum fraction of polygon area to bounding box 
 # area for a polygon to be displayed
 AREA_RATIO_FILTER_DEFAULT = 0.0001
 # Scents page size
-SCENTS_PAGE_SIZE = 5
+SCENTS_PAGE_SIZE = 50
