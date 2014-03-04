@@ -12,6 +12,8 @@
 
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/scenter.css' %}" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Imprima' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
     <script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
@@ -21,6 +23,7 @@
   </head>
 
   <body>
+{% block navbar %}
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top shadow" role="navigation" style="background-color:#18BC62; border-color:#128A48;">
         <div class="navbar-header">
@@ -36,7 +39,7 @@
           </a>
         </div>
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="{% url 'main' %}">Home</a></li>
             <li><a href="{% url 'about' %}">About</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -58,12 +61,13 @@
                     <input type="password" placeholder="Password" name="password" class="form-control">
                   </div>
                   <button type="submit" class="btn btn-success">Sign in</button>
-                  <button type="button" onclick="window.location.href = '{% url 'registration_register' %}';" class="btn btn-link navbar-link">Sign up</button>
+                  <button type="button" onclick="window.location.href = '{% url 'registration_register' %}';" class="btn btn-link">Sign up</button>
                 </form>
               {% endif %}
             </div>
           </div><!--/.navbar-collapse -->
       </div>
+{% endblock %}
 
 <!-- Begin page content -->
 {% block content %}
