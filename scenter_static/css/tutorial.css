@@ -169,6 +169,10 @@ body, html {
 }
 
 @media (max-width: 767px) {
+	.intro-message > h4 {
+		font-size: 20pt;
+	}
+
 	.intro-message > h3 {
 		font-size: 18pt;
 	}
@@ -179,6 +183,10 @@ body, html {
 }
 
 @media (max-width: 568px) {
+	.intro-message > h4 {
+		font-size: 14pt;
+	}
+
 	.intro-message > h3 {
 		font-size: 14pt;
 	}
