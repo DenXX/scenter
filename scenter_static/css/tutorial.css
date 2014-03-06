@@ -99,28 +99,8 @@ body, html {
 	font-family: 'Montserrat', sans-serif;
 }
 
-@media (max-width: 767px) {
-	.intro-message {
-		padding-bottom: 15%;
-	}
-
-	.intro-message > h1 {
-		font-size: 3em;
-	}
-
-	ul.intro-social-buttons > li {
-		display: block;
-		margin-bottom: 20px;
-		padding: 0;
-	}
-
-	ul.intro-social-buttons > li:last-child {
-		margin-bottom: 0;
-	}
-
-	.intro-divider {
-		width: 100%;
-	}
+#bottom-phone {
+	height: 250px;
 }
 
 .network-name {
@@ -185,6 +165,10 @@ body, html {
 	.intro-message > h1 {
 		font-size: 22pt;
 	}
+
+	#bottom-phone {
+		height: 200px;
+	}
 }
 
 @media (max-width: 568px) {
@@ -198,6 +182,9 @@ body, html {
 
 	.intro-message > h1 {
 		font-size: 18pt;
+	}
+	#bottom-phone {
+		height: 150px;
 	}
 }
 
