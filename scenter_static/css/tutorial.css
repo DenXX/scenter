@@ -44,9 +44,14 @@ body, html {
 	min-height: 70%;
 }
 
+.dont-overflow {
+	max-height: 100%;
+}
+
 .intro-message {
 	position: relative;
 	padding-top: 2%;
+	max-height: 100%;
 }
 
 .intro-message > h1, h2, h3 {
