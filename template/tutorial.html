@@ -32,11 +32,17 @@
                     </div>
                 </div>
             </div>
-            <div class="bottom-text1">Drop messages<br /> to places</div>
-	        <div class="bottom">
-	            <img src="{% static 'img/top_phone.png' %}" height="400px" />
-	        </div>
-	        <div class="bottom-text2">Explore what’s<br /> happening nearby</div>
+            <div clas="row" style="height: 60%">
+            	<div class="col-sm-4 phonetext-left hidden-xs">
+            		Drop messages<br /> to places
+            	</div>
+            	<div class="col-sm-4" id="phone-top-div" style="min-height: 100%; max-height: 100%">
+            		<img src="{% static 'img/top_phone.png' %}" id="phone-top" class="image-scale" />
+            	</div>
+            	<div class="col-sm-4 phonetext-right hidden-xs">
+            		Explore what’s<br /> happening nearby
+            	</div>
+            </div>
         </div>
         <!-- /.container -->
     </div>
@@ -110,7 +116,16 @@
     <!-- /.intro-header -->
 
  <script type="text/javascript">
+function updateImageDiv() {
+	// alert($('#phone-top-div').outerHeight());
+	// alert($('#phone-top').height());
+	$('#phone-top-div').css("padding-top", ($('#phone-top-div').outerHeight() - $('#phone-top').outerHeight()) + 'px');
+}
+
 $(function(){
+	$('#phone-top').load(updateImageDiv);
+	$(window).resize(updateImageDiv);
+
 	$(window).keydown(function(e) {
 		if (e.keyCode != 40 && e.keyCode != 38) return;
 
