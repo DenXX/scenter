@@ -151,7 +151,7 @@ scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fenc
         var data = {location:convertPolygonForApi($scope.createdPolygon.getPath().getArray()),
             name:$scope.newPolygonName};
         // TODO: do this with Angular service
-        $http({method:'POST', url: 'api/fences/', data: data,
+        $http({method:'POST', url: '/api/fences/', data: data,
             headers: {'X-CSRFToken':$cookies.csrftoken}}).
           success(function(data, status, headers, config) {
             $scope.updateFences();
@@ -245,7 +245,7 @@ scenterControllers.controller('ScentListCtrl', ['$scope', '$http', '$cookies', '
         if ($scope.currentFence != null) {
             var data = {content:$scope.newScentText};
             // TODO: do this using Angular service
-            $http({method:'POST', url: 'api/scents/', data: data,
+            $http({method:'POST', url: '/api/scents/', data: data,
                 params: {fence_id:$scope.currentFence.id},
                 headers: {'X-CSRFToken':$cookies.csrftoken}}).
               success(function(data, status, headers, config) {

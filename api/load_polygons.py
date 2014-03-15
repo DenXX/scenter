@@ -27,10 +27,13 @@ def get_geo_django_polygon(coordinates):
     return res + '))'
 
 def main(input_filename):
+    # fences = Fence.objects.filter(created__gt=datetime(2014, 3, 8))
+    # fences.delete()
+    # return    
     with open(input_filename, 'r') as input:
         for counter, line in enumerate(input):
             building = json.loads(line, encoding='utf8')
-            if int(building['shapeType']) == 5:
+            if int(building['shapeType']) == 5 and len(building['points']) > 2:
                 polygon = get_geo_django_polygon(building['points'])
                 Fence.objects.create(name=building['name'], location=polygon)
             print counter

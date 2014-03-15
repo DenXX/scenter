@@ -1,7 +1,8 @@
 """ This file declares some serializes for RESTful API model serialization """
 
 from django.contrib.auth.hashers import make_password
-from rest_framework import serializers
+from django.core.paginator import Paginator
+from rest_framework import pagination, serializers
 
 from api.models import *
 
@@ -76,17 +77,6 @@ class UserUpdateSerializer(UserSerializer):
             'wormholes')
 
 
-# TODO: HyperlinkedModelSerializers are better
-class FenceSerializer(serializers.ModelSerializer):
-    """ Serializer for Fence model """
-    location = serializers.CharField(source='location')
-    # TODO: Why is this commented out?
-    # due = serializers.DateTimeField(input_formats=['%m/%d/%Y %I:%M %p',])
-    class Meta:
-        model = Fence
-        fields = ('id', 'name', 'created', 'due', 'location')
-
-
 class ScentSerializer(serializers.ModelSerializer):
     """ Serializer for Scent model """
     author = serializers.SlugRelatedField(slug_field='username')
@@ -94,3 +84,29 @@ class ScentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scent
         fields = ('id', 'author', 'content', 'created', 'due', 'fence')
+
+class PaginatedScentSerializer(pagination.PaginationSerializer):
+    """
+    Serializes page objects of scent querysets.
+    """
+    class Meta:
+        object_serializer_class = ScentSerializer
+
+# TODO: HyperlinkedModelSerializers are better
+class FenceSerializer(serializers.ModelSerializer):
+    """ Serializer for Fence model """
+    location = serializers.CharField(source='location')
+    scents = serializers.SerializerMethodField('paginated_scents')
+    # TODO: Why is this commented out?
+    # due = serializers.DateTimeField(input_formats=['%m/%d/%Y %I:%M %p',])
+
+    def paginated_scents(self, fence):
+        paginator = Paginator(fence.scents.all(), settings.SCENTS_PAGE_SIZE)
+        scents = paginator.page(1)
+        serializer = PaginatedScentSerializer(scents)
+        return serializer.data
+
+    class Meta:
+        model = Fence
+        fields = ('id', 'name', 'created', 'due', 'location', 'scents')
+

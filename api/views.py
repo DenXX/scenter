@@ -10,7 +10,7 @@ from rest_framework import permissions
 from rest_framework import serializers
 from rest_framework import status
 
-from datetime import datetime
+from django.utils import timezone
 
 from django.contrib.gis.geos import Polygon, Point
 
@@ -90,8 +90,8 @@ class ScentListView(APIView):
 
     def filter_inactive(self, scents_queryset):
         """ Filter dead scents """
-        return scents_queryset.filter(created__lt=datetime.now()).\
-            filter(Q(due__gt=datetime.now()) | Q(due__isnull=True))
+        return scents_queryset.filter(created__lt=timezone.now()).\
+            filter(Q(due__gt=timezone.now()) | Q(due__isnull=True))
 
 
     def get(self, request):
@@ -108,7 +108,7 @@ class ScentListView(APIView):
                 first_scent_id = int(request.QUERY_PARAMS['first_scent_id'])
             scents_queryset = ScentsFilter.paginate(scents_queryset, settings.SCENTS_PAGE_SIZE,
                 last_scent_id=last_scent_id, first_scent_id=first_scent_id)
-            serializer = ScentSerializer(scents_queryset)
+            serializer = ScentSerializer(scents_queryset, many=True)
             return Response(serializer.data)
 
         if 'loc' in request.QUERY_PARAMS:

@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 
 from django.contrib.gis.geos import Polygon, Point
 from django.contrib.gis.measure import Distance
@@ -13,8 +13,8 @@ class FencesFilter:
     @staticmethod
     def filter_inactive(fences_queryset):
         """ Filters incative fences based on creation and due dates """
-        return fences_queryset.filter(created__lt=datetime.now()).\
-        	filter(Q(due__gt=datetime.now()) | Q(due__isnull=True))
+        return fences_queryset.filter(created__lt=timezone.now()).\
+        	filter(Q(due__gt=timezone.now()) | Q(due__isnull=True))
 
     @staticmethod
     def filter_no_scents(fences_queryset):
