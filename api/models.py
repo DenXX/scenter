@@ -75,3 +75,8 @@ class Scent(models.Model):
 
     class Meta:
         ordering = ('-created',)
+
+class Feedback(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='feedback',
+        help_text=u'Feedback this user submitted')
+    text = models.TextField(help_text=u'The text of the feedback')

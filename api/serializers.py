@@ -110,3 +110,9 @@ class FenceSerializer(serializers.ModelSerializer):
         model = Fence
         fields = ('id', 'name', 'created', 'due', 'location', 'scents')
 
+class FeedbackSerializer(serializers.ModelSerializer):
+    """ Serializer for Scent model """
+
+    class Meta:
+        model = Feedback
+        fields = ('author', 'text')

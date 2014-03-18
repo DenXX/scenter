@@ -1,8 +1,9 @@
 # Django settings for scenter project.
 
+# PROJECT_ROOT = '/home/ubuntu/Projects/scenter'
 PROJECT_ROOT = '/Users/denis/Projects/scenter'
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -25,7 +26,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -215,6 +216,7 @@ LOGGING = {
 }
 
 # Allow 5 meters error in detecting fences you are in
+# TODO: removed for now, SQL is slow
 DEFAULT_LOCATION_MATCH_ACCURACY = 5
 # Minimum fraction of polygon area to bounding box 
 # area for a polygon to be displayed

@@ -11,6 +11,7 @@ router = DefaultRouter()
 router.register(r'user', views.UserView)
 router.register(r'scent', views.ScentView)
 router.register(r'fence', views.FenceView)
+router.register(r'feedback', views.FeedbackView)
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
