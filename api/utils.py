@@ -43,7 +43,9 @@ class FencesFilter:
         if len(loc) != 2:
             raise Http404
         loc = Point(map(float, loc))
-        return fences_queryset.filter(_location__distance_lte=(loc, Distance(m=accuracy)))
+        return fences_queryset.filter(_location__contains=loc)
+        # TODO: This query is very slow, any alternatives?
+        #return fences_queryset.filter(_location__distance_lte=(loc, Distance(m=accuracy)))
 
 class ScentsFilter:
     """ This class contains static methods for filtering scents """
