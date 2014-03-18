@@ -149,17 +149,21 @@ class ScentView(viewsets.ModelViewSet):
     queryset = Scent.objects.all()
     serializer_class = ScentSerializer
 
-class FeedbackView(viewsets.ModelViewSet):
+class FeedbackView(APIView):
     """ View for users feedback """
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
-    queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+    def get(self, request):
+        feedback_queryset = Feedback.objects.all()
+        serializer = FeedbackSerializer(feedback_queryset, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         # TODO: figure out why json gives mutable dict and form immutable
         data = request.DATA.copy()
-        data.update({'author': request.user.username})
+        data.update({'author': request.user.id})
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save()

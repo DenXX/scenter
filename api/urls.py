@@ -11,7 +11,6 @@ router = DefaultRouter()
 router.register(r'user', views.UserView)
 router.register(r'scent', views.ScentView)
 router.register(r'fence', views.FenceView)
-router.register(r'feedback', views.FeedbackView)
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -23,4 +22,5 @@ urlpatterns = patterns('',
     url(r'^scents/', views.ScentListView.as_view()),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^feedback/', views.FeedbackView.as_view()),
 )
