@@ -16,6 +16,7 @@ DATABASES = {
     'default': {
         #'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'ENGINE': 'dbpool.db.backends.postgis',  # Using pgbouncer
+        'OPTIONS': {'MAX_CONNS': 100},           # Using pgbouncer
         'NAME': 'scenter',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'scenter',
