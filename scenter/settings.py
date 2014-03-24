@@ -21,7 +21,8 @@ DATABASES = {
         # The following settings are not used with sqlite3:
         'USER': 'scenter',
         'PASSWORD': 'scenterpass',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        # 'HOST': 'scenterdb.cqfiqn6m4ik6.us-east-1.rds.amazonaws.com',
         # 'PORT': '',                      # Set to empty string for default.
         'PORT': 5433,                           # Using pgbouncer
     }
