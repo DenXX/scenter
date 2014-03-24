@@ -69,6 +69,7 @@ scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fenc
 
     // TODO: If we move map and fence goes out of scope, we should remove window.
     showInfoWindow = function (fence, coords) {
+        // TODO: Make delete appear only for superusers
         var contentString = '<div>' + fence.name + '</div>';
         if ($scope.infoWindow)
             $scope.infoWindow.close();
@@ -113,6 +114,11 @@ scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fenc
         $scope.fences[fence_polygon.id] = fence_polygon;
     };
 
+    hideFence = function(fence) {
+        fence.setMap(null);
+        delete fence;
+    }
+
     hideInvisibleFences = function (fences) {
         // Create hashset of ids in returned set
         ids_to_keep = {};
@@ -124,7 +130,8 @@ scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fenc
             // If not in the list to keep or it is not current (if there is current)
             if (!(id in ids_to_keep) && 
                 ($scope.currentFence == null || $scope.currentFence.id != id)) {
-                $scope.fences[id].setMap(null);
+                hideFence($scope.fences[id]);
+                // Previous call doesn't delete it from the array
                 delete $scope.fences[id];
             }
         }
@@ -162,6 +169,36 @@ scenterControllers.controller('FenceCtrl', ['$scope', '$http', '$cookies', 'Fenc
           });
 
         $scope.resetSaveFence();
+    }
+
+    $scope.renameFence = function() {
+        var data = {'name':$scope.currentFence.name};
+        // TODO: do this with Angular service
+        $http({method:'PATCH', url: '/api/fence/' + $scope.currentFence.id,
+            data: data, headers: {'X-CSRFToken':$cookies.csrftoken}}).
+          success(function(data, status, headers, config) {
+            deselectCurrentFence();
+          }).
+          error(function(data, status, headers, config) {
+            // TODO: I guess we don't show this to the user, but email?
+            alert(data.errors);
+          });
+    }
+
+    $scope.deleteFence = function() {
+        if (confirm("Are you sure want to permanently delete this fence?")) {
+            $http({method:'DELETE', url: '/api/fence/' + $scope.currentFence.id,
+                headers: {'X-CSRFToken':$cookies.csrftoken}}).
+            success(function(data, status, headers, config) {
+                hideFence($scope.currentFence);
+                deselectCurrentFence();
+                $scope.updateFences();
+            }).
+            error(function(data, status, headers, config) {
+                // TODO: I guess we don't show this to the user, but email?
+                alert(data.errors);
+            });
+        }
     }
 
     // TODO: How to skip this in not admin view?

@@ -3,7 +3,7 @@
 # PROJECT_ROOT = '/home/ubuntu/Projects/scenter'
 PROJECT_ROOT = '/Users/denis/Projects/scenter'
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -14,18 +14,23 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'ENGINE': 'dbpool.db.backends.postgis',  # Using pgbouncer
-        'OPTIONS': {'MAX_CONNS': 100},           # Using pgbouncer
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'scenter',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
         'USER': 'scenter',
         'PASSWORD': 'scenterpass',
-        'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        # 'HOST': 'scenterdb.cqfiqn6m4ik6.us-east-1.rds.amazonaws.com',
-        # 'PORT': '',                      # Set to empty string for default.
-        'PORT': 5433,                           # Using pgbouncer
-    }
+        'HOST': '',                             # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        #'HOST': 'scenterdb.cqfiqn6m4ik6.us-east-1.rds.amazonaws.com',
+        'PORT': '',                      # Set to empty string for default.
+    },
+    # 'production' : {
+    #     'ENGINE': 'dbpool.db.backends.postgis',  # Using pgbouncer
+    #     'OPTIONS': {'MAX_CONNS': 100},           # Using pgbouncer
+    #     'NAME': 'scenter',                      # Or path to database file if using sqlite3.
+    #     'USER': 'scenter',
+    #     'PASSWORD': 'scenterpass',
+    #     'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+    #     'PORT': 5433,                           # Using pgbouncer
+    # }
 }
 
 SOUTH_DATABASE_ADAPTERS = {

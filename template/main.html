@@ -15,6 +15,20 @@
 {% block content %}
 <div ng-controller="FenceCtrl" id="map_ctrl">
 	<div id="map-canvas"></div>
+  <div id="fence-info">
+    <div class="text-muted" ng-hide="currentFence" style="text-align:center; vertical-align:center">No fences selected</div>
+    {% if request.user.is_superuser %}
+      <div class="input-group col-sm-12" ng-show="currentFence">
+        <input type="text" class="form-control" name="fence-name" id="fence-name" ng-model="currentFence.name" />
+        <span class="input-group-btn">
+          <button class="btn btn-warning" type="button" ng-click="renameFence()">Save</button>
+          <button class="btn btn-danger" type="button" ng-click="deleteFence()">Delete</button>
+        </span>
+      </div>
+    {% else %}
+      <div ng-show="currentFence" style="text-align:center; vertical-align:center">{% verbatim %}{{ currentFence.name }}{% endverbatim %}</div>
+    {% endif %}
+  </div>
 
 	<div id="scent-canvas" class="shadow" ng-controller="ScentListCtrl">
     <div class="alert alert-success rightPanelAlert" ng-hide="currentFence">Please select a fence to see the scents inside it</div>
@@ -44,7 +58,7 @@
     </div>
 	</div>
 
-  {% if request.user.is_staff %}
+  {% if request.user.is_superuser %}
     <!-- Save Fence Modal Dialog -->
     <div class="modal fade" id="saveFenceDialog" tabindex="-1" role="dialog" aria-labelledby="saveFenceModalLabel" aria-hidden="true">
       <div class="modal-dialog">
