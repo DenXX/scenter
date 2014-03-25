@@ -169,6 +169,7 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'registration',
     'bootstrap3',
+    'debug_toolbar',
     'south',
     'api',
     'website',
