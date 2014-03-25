@@ -21,7 +21,7 @@ class Fence(models.Model):
         'fence was created')
     due = models.DateTimeField(blank=True, null=True, help_text=u'When the '
         'fence will become inactive')
-    _location = models.PolygonField(help_text=u'Polygon region of the fence')
+    _location = models.PolygonField(help_text=u'Polygon region of the fence', db_index=True)
 
     # Create methods to convert location representations from numbers to GEOMETRY
     def set_location(self, location):
