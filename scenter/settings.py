@@ -3,7 +3,7 @@
 # PROJECT_ROOT = '/home/ubuntu/Projects/scenter'
 PROJECT_ROOT = '/Users/denis/Projects/scenter'
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -20,6 +20,7 @@ DATABASES = {
         'PASSWORD': 'scenterpass',
         'HOST': '',                             # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         #'HOST': 'scenterdb.cqfiqn6m4ik6.us-east-1.rds.amazonaws.com',
+        'CONN_MAX_AGE': None,
         'PORT': '',                      # Set to empty string for default.
     },
     # 'production' : {
