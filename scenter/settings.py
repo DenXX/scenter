@@ -128,8 +128,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     # Uncomment the next line for simple clickjacking protection:
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 CORS_ALLOW_HEADERS = (
@@ -200,6 +201,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
+
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+INTERNAL_IPS = '170.140.151.52'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
